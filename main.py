@@ -5,7 +5,9 @@ from data import db_session
 from data.users import User
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+app.config[
+    'SECRET_KEY'] = "_ti{qxjXpNadwPPGaOh{zBawz^GBBpoIU|qpGpEVzgRzqhqeZ]hv_oeBhb|WBkmdRANtw}akIfMgOLm{r]ZnYiZcBFXZz{'"
+
 
 # def main():
 #     db_session.global_init("db/main.db")
@@ -39,8 +41,6 @@ def reqister():
     return render_template('common/register_page.html', title='Регистрация', form=form)
 
 
-
-
 if __name__ == '__main__':
-    #main()
+    # main()
     app.run(port=6655)
