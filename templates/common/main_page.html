@@ -7,8 +7,16 @@
 <div class="normal_content">
     <div id="about" class="about herf_helper">
     	<h3>Кто мы?</h3>
+        <p class="inf_p">{{interesting_information}}</p>
     </div>
-    <div class="services_list herf_helper"></div>
+    <div class="services_list herf_helper">
+        <h3>Чем мы занимаемся?</h3>
+        <ul class="inf_ul">
+        {% for item in information_list %}
+            <li class="inf_li">{{ item }}</li>
+        {% endfor %}
+        </ul>
+    </div>
     <div id="find_us" class="find_us herf_helper">
         <h3>Как нас найти:</h3>
         <div id="map" class="map"></div>

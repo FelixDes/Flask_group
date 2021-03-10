@@ -15,7 +15,8 @@ app.config[
 
 @app.route("/")
 def index():
-    return render_template("common/main_page.html")
+    return render_template("common/main_page.html", interesting_information='текст ' * 150,
+                           information_list=['что-то интересное'] * 5)
 
 
 @app.route('/register', methods=['GET', 'POST'])
