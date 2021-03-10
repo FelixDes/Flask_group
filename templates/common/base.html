@@ -3,7 +3,12 @@
 <head>
     <meta charset="utf-8">
     <link href="/static/css/style.css" rel="stylesheet">
-
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=6fbbac3f-f88d-4d13-b6c0-dcfb9e2829bd&lang=ru_RU" type="text/javascript">
+    </script>
+    <script type="text/javascript" src="static/js_scripts/map_script.js">
+    </script>
     <title>{{ title }}</title>
 </head>
 <body>
@@ -13,10 +18,11 @@
                 <div class="header_inner">
                     <div class="header_logo">logo</div>
 
-                    <nav>
-                        <a class="nav_link" href="#">О НАС</a>
-                        <a class="nav_link" href="#">СВЯЗАТЬСЯ С НАМИ</a>
-                        <a class="nav_link" href="#">РЕГИСТРАЦИЯ</a>
+                    <nav id="nav">
+                        <a class="nav_link" href="/#about">О НАС</a>
+                        <a class="nav_link" href="/#map">ГДЕ МЫ НАХОДИМСЯ</a>
+                        <a class="nav_link" href="/#connect">СВЯЗАТЬСЯ С НАМИ</a>
+                        <a class="nav_link" href="/register">РЕГИСТРАЦИЯ</a>
                     </nav>
                 </div>
 
