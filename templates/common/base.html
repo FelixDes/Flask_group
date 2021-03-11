@@ -5,42 +5,45 @@
     <link href="/static/css/style.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
-    <script src="https://api-maps.yandex.ru/2.1/?apikey=6fbbac3f-f88d-4d13-b6c0-dcfb9e2829bd&lang=ru_RU" type="text/javascript">
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=6fbbac3f-f88d-4d13-b6c0-dcfb9e2829bd&lang=ru_RU"
+            type="text/javascript">
     </script>
-    <script type="text/javascript" src="static/js_scripts/map_script.js">
-    </script>
+    <script language="JavaScript" type="text/javascript" src="static/js_scripts/jquery-3.6.0.min.js"></script>
+    <script language="JavaScript" type="text/javascript" src="static/js_scripts/map_script.js"></script>
+    <script language="JavaScript" type="text/javascript" src="static/js_scripts/scroll_helper.js"></script>
+
     <title>{{ title }}</title>
 </head>
 <body>
-    <div class="page">
-        <header class="header">
-            <div class="container">
-                <div class="header_inner">
-                    <div class="header_logo">logo</div>
+<div class="page">
+    <header class="header">
+        <div class="container">
+            <div class="header_inner">
+                <div class="header_logo">logo</div>
 
-                    <nav id="nav">
-                        <a class="nav_link" href="/#about">О НАС</a>
-                        <a class="nav_link" href="/#find_us">ГДЕ МЫ НАХОДИМСЯ</a>
-                        <a class="nav_link" href="/#connect">СВЯЗАТЬСЯ С НАМИ</a>
-                        <a class="nav_link" href="/register">РЕГИСТРАЦИЯ</a>
-                    </nav>
-                </div>
-
+                <nav id="nav">
+                    <a class="nav_link" href="/#about">О НАС</a>
+                    <a class="nav_link" href="/#find_us">ГДЕ МЫ НАХОДИМСЯ</a>
+                    <a class="nav_link" href="/#connect">СВЯЗАТЬСЯ С НАМИ</a>
+                    <a class="nav_link" href="/register">РЕГИСТРАЦИЯ</a>
+                </nav>
             </div>
 
-
-        </header>
-        <!-- Begin page content -->
-
-
-        <div class="main_content">
-                {% block content %}{% endblock %}
         </div>
-        <footer class="footer">
-            <p class="contact">Email: 123@r.ru</p>
-            <p class="contact">Телефон: 000-000</p>
-            <p class="copyright">Copyryght by ///</p>
-        </footer>
+
+
+    </header>
+    <!-- Begin page content -->
+
+
+    <div class="main_content">
+        {% block content %}{% endblock %}
+    </div>
+    <footer class="footer">
+        <p class="contact">Email: 123@r.ru</p>
+        <p class="contact">Телефон: 000-000</p>
+        <p class="copyright">Copyryght by ///</p>
+    </footer>
 
 </div>
 </body>
