@@ -1,16 +1,70 @@
+import json
+
 from flask import Flask, render_template, redirect
 
 from Forms.user import RegisterForm
 from data import db_session
 from data.users import User
 
+# ДЛЯ КОНСТАНТ
+path_json = "Res_json/str.json"
+
+# Список текущих ключей json
+# Если добавляешь что-то в json - дублируешь сюда
+#
+# logo_txt - текст логотипа - class header_logo
+# title_main - название мейн страницы
+# title_registration - название страницы регистрации
+# title_login - название страницы логина
+# text_about -
+# text_about_our_work - список услуг - class services_list
+# how_to_find_us - то, что будет перед картой - class потом добавлю
+# how_to_contact_us - список контактов - class потом добавлю
+# footer - то, что будет отображаться в футере сайта
+
 app = Flask(__name__)
 app.config[
     'SECRET_KEY'] = "_ti{qxjXpNadwPPGaOh{zBawz^GBBpoIU|qpGpEVzgRzqhqeZ]hv_oeBhb|WBkmdRANtw}akIfMgOLm{r]ZnYiZcBFXZz{'"
 
+json_dict = {}
 
-# def main():
-#     db_session.global_init("db/main.db")
+
+def parse_all(json_path):
+    try:
+        with open(json_path, "r") as file:
+            json_dict = json.load(file)
+        return json_dict
+    except FileNotFoundError:
+        print("Файл не существует")
+        return "Файл не существует"
+    except TypeError:
+        print("Сегодня мы принимаем только строки")
+        return "Сегодня мы принимаем только строки"
+    except OSError:
+        print("Что-то пошло не так")
+        return "Что-то пошло не так"
+
+
+def get_value(json_path, key):
+    try:
+        with open(json_path, "r") as file:
+            json_dict = json.load(file)
+        return json_dict.getValue(str(key))
+    except FileNotFoundError:
+        print("Файл не существует")
+        return "Файл не существует"
+    except TypeError:
+        print("Сегодня мы принимаем только строки, и иногда int, но только как ключ")
+        return "Сегодня мы принимаем только строки, и иногда int, но только как ключ"
+    except OSError:
+        print("Что-то пошло не так")
+        return "Что-то пошло не так"
+
+
+def main():
+    global json_dict
+    json_dict = parse_all(path_json)
+    db_session.global_init("db/main.db")
 
 
 @app.route("/")
@@ -43,5 +97,5 @@ def reqister():
 
 
 if __name__ == '__main__':
-    # main()
+    main()
     app.run(port=6655)
