@@ -1,0 +1,18 @@
+{% extends "common/base.html" %}
+
+{% block content %}
+<div class="normal_content">
+	<ul id="messages"></ul>
+        <div class="row">
+            <div class="col-7">
+                <form id="form_send_msg" autocomplete="off" novalidate>
+                    <div class="form-group">
+                        <label for="message_input">Message:</label>
+                        <input type="text" class="form-control" id="message_input" placeholder="Enter your message here">
+                    </div>
+                    <button type="submit" id="send_msg" class="btn btn-success">Send</button>
+                </form>
+            </div>
+        </div>
+</div>
+{% endblock %}
