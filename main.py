@@ -44,7 +44,7 @@ def server_start_data_read(path_sever_json):
 
 def parse_all(json_path):
     try:
-        with open(json_path, "r") as file:
+        with open(json_path, "r", encoding='utf-8') as file:
             json_dict = json.load(file)
         return json_dict
     except FileNotFoundError:
@@ -60,7 +60,7 @@ def parse_all(json_path):
 
 def get_value(json_path, key):
     try:
-        with open(json_path, "r") as file:
+        with open(json_path, "r", encoding='utf-8') as file:
             json_dict = json.load(file)
         return json_dict.getValue(str(key))
     except FileNotFoundError:
@@ -82,8 +82,9 @@ def main():
 
 @app.route("/")
 def index():
+    inf_dict = parse_all(path_json)
     return render_template("common/main_page.html", interesting_information='текст ' * 150,
-                           information_list=['что-то интересное'] * 5)
+                           information_list=inf_dict['text_about_our_work'])
 
 
 @app.route('/register', methods=['GET', 'POST'])
