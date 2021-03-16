@@ -56,7 +56,7 @@
     <header class="header">
         <div class="container">
             <div class="header_inner">
-                <div class="header_logo">logo</div>
+                <div class="header_logo">{{logo_txt}}</div>
 
                 <nav id="nav">
                     <a class="nav_link" href="/#about">О НАС</a>
@@ -75,12 +75,12 @@
 
     <div class="main_content">
         {% block content %}{% endblock %}
-        <a href="" class="bottom_chat_button">Чат с менеджером</a>
+        <a href="" class="bottom_chat_button">{{chat_btn_text}}</a>
     </div>
     <footer class="footer">
-        <p class="contact">Email: 123@r.ru</p>
-        <p class="contact">Телефон: 000-000</p>
-        <p class="copyright">Copyryght by ///</p>
+        {% for item in footer_inf %}
+            <p class="contact">{{ item }}</p>
+        {% endfor %}
     </footer>
 
 </div>

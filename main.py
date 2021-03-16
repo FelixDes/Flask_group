@@ -83,8 +83,11 @@ def main():
 @app.route("/")
 def index():
     inf_dict = parse_all(path_json)
-    return render_template("common/main_page.html", interesting_information='текст ' * 150,
-                           information_list=inf_dict['text_about_our_work'])
+    return render_template("common/main_page.html", interesting_information=inf_dict['text_about'],
+                           information_list=inf_dict['text_about_our_work'],
+                           logo_txt=inf_dict['logo_txt'], chat_btn_text=inf_dict['chat_btn_text'],
+                           connection_list=inf_dict['how_to_contact_us'], how_to_find_us=inf_dict['how_to_find_us'],
+                           footer_inf=inf_dict['footer'])
 
 
 @app.route('/register', methods=['GET', 'POST'])

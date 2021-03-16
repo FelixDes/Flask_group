@@ -154,10 +154,23 @@ h3 {
     align: center;
 }
 
+.connect_ul {
+    font-size: 25px;
+    list-style-type: none;
+    align: center;
+}
+
+.connect_li {
+	line-height: 50px;
+}
+
 .inf_li {
 	line-height: 50px;
 	border: 10px solid #F8F9F9
 }
+
+h4 {
+    font-size: 20px;}
 
 .bottom_chat_button {
   text-decoration: none;
