@@ -9,7 +9,7 @@ from .db_session import SqlAlchemyBase
 class User(SqlAlchemyBase):
     __tablename__ = 'users'
 
-    messages = relationship("Message")
+    message = relationship("Message", back_populates="users")
 
     id = sqlalchemy.Column(sqlalchemy.Integer, unique=True, primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
@@ -22,7 +22,7 @@ class User(SqlAlchemyBase):
 class Message(SqlAlchemyBase):
     __tablename__ = "message"
 
-    parent_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("parent.id"))
+    user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
 
     id = sqlalchemy.Column(sqlalchemy.Integer, unique=True, primary_key=True, autoincrement=True)
     text = sqlalchemy.Column(sqlalchemy.String, unique=True)
