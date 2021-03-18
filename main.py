@@ -1,6 +1,7 @@
 import json
 
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, session, request
+from flask_login import LoginManager, current_user
 from flask_socketio import SocketIO
 
 from Forms.user import RegisterForm
@@ -26,6 +27,8 @@ path_sever_json = "Res_json/server.json"
 # footer - то, что будет отображаться в футере сайта
 
 app = Flask(__name__)
+login_manager = LoginManager()
+login_manager.init_app(app)
 app.config[
     'SECRET_KEY'] = "_ti{qxjXpNadwPPGaOh{zBawz^GBBpoIU|qpGpEVzgRzqhqeZ]hv_oeBhb|WBkmdRANtw}akIfMgOLm{r]ZnYiZcBFXZz{'"
 
@@ -80,6 +83,11 @@ def main():
     db_session.global_init("db/main.db")
 
 
+@login_manager.user_loader
+def load_user(user_id):
+    db_sess = db_session.create_session()
+    return db_sess.query(User).get(user_id)
+
 @app.route("/")
 def index():
     inf_dict = parse_all(path_json)
@@ -111,6 +119,24 @@ def reqister():
         db_sess.commit()
         return redirect('/login')
     return render_template('common/register_page.html', title='Регистрация', form=form)
+
+@app.route('/chat', methods=['GET', 'POST'])
+def chat():
+    print(session)
+    username = None
+    if session.get("username"):
+        username = session.get("username")
+    return render_template('chat_page.html', username=username)
+
+@socketio.on('message')
+def handleMessage(data):
+    db_sess = db_session.create_session()
+    print(f"Message: {data}")
+    send(data, broadcast=True)
+    message = Message(text=data['msg'])
+    current_user.messages.append(message)
+    db_sess.add(message)
+    db_sess.commit()
 
 
 if __name__ == '__main__':
