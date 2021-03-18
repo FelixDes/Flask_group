@@ -1,12 +1,12 @@
 import json
 
-from flask import Flask, render_template, redirect, session, request
+from flask import Flask, render_template, redirect, session
 from flask_login import LoginManager, current_user
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, send
 
 from Forms.user import RegisterForm
 from data import db_session
-from data.users import User
+from data.users import User, Message
 
 # ДЛЯ КОНСТАНТ
 path_json = "Res_json/str.json"
@@ -88,6 +88,7 @@ def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
 
+
 @app.route("/")
 def index():
     inf_dict = parse_all(path_json)
@@ -112,13 +113,13 @@ def reqister():
         user = User(
             name=form.name.data,
             email=form.email.data,
-            about=form.about.data
         )
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
         return redirect('/login')
     return render_template('common/register_page.html', title='Регистрация', form=form)
+
 
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
@@ -127,6 +128,7 @@ def chat():
     if session.get("username"):
         username = session.get("username")
     return render_template('chat_page.html', username=username)
+
 
 @socketio.on('message')
 def handleMessage(data):

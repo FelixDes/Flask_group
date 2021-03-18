@@ -1,7 +1,7 @@
 import datetime
 
 import sqlalchemy
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, relation
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .db_session import SqlAlchemyBase
@@ -10,14 +10,13 @@ from .db_session import SqlAlchemyBase
 class User(SqlAlchemyBase):
     __tablename__ = 'users'
 
-    messages = relationship("Message", back_populates="users")
-
     id = sqlalchemy.Column(sqlalchemy.Integer, unique=True, primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    is_admin = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False)
+    is_admin = sqlalchemy.Column(sqlalchemy.Boolean, nullable=True)
     email = sqlalchemy.Column(sqlalchemy.String, index=True, unique=True, nullable=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
+    messages = relationship("Message", back_populates="user")
 
     def __repr__(self):
         return f'<User> {self.id} {self.name} {self.email} {self.is_admin}'
@@ -35,5 +34,6 @@ class Message(SqlAlchemyBase):
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
 
     id = sqlalchemy.Column(sqlalchemy.Integer, unique=True, primary_key=True, autoincrement=True)
+    user = relation('User')
     text = sqlalchemy.Column(sqlalchemy.String, unique=True)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
