@@ -127,7 +127,7 @@ def chat():
     username = None
     if session.get("username"):
         username = session.get("username")
-    return render_template('chat_page.html', username=username)
+    return render_template('common/chat_page.html', username=username)
 
 
 @socketio.on('message')
