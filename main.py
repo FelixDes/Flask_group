@@ -6,7 +6,8 @@ from flask_socketio import SocketIO, send
 
 from Forms.user import RegisterForm
 from data import db_session
-from data.users import User, Message
+from data.users import User
+from data.messages import Message
 
 # ДЛЯ КОНСТАНТ
 path_json = "Res_json/str.json"
@@ -77,10 +78,14 @@ def get_value(json_path, key):
         return "Что-то пошло не так"
 
 
-def main():
-    global json_dict
+def main(path_json_get="Res_json/str.json", path_sever_json_get="Res_json/server.json"):
+    global json_dict, path_json, path_sever_json
+    path_json = path_json_get
+    path_sever_json = path_sever_json_get
     json_dict = parse_all(path_json)
     db_session.global_init("db/main.db")
+    server_start_data_read(path_sever_json)
+    app.run(port=server_dict.get('port'))
 
 
 @login_manager.user_loader
@@ -142,6 +147,4 @@ def handleMessage(data):
 
 
 if __name__ == '__main__':
-    main()
-    server_start_data_read(path_sever_json)
-    app.run(port=server_dict.get('port'))
+    main(path_json, path_sever_json)
