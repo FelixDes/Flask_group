@@ -178,6 +178,13 @@ h1, h2, h3, h4, h5, h6 {
     background-color: #fd0
 }
 
+.input_label i {
+    margin-left: -30px;
+    margin-top: 15px;
+    cursor: pointer;
+    font-size: 20px;
+    position: absolute;
+}
 /*end of register stuff*/
 
 

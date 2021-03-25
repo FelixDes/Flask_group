@@ -17,7 +17,9 @@
     </p>
     <p class="input_label">
 <!--        {{ form.password.label }}<br>-->
-        {{ form.password(class="form-control input", type="password", placeholder=form.password.label.text) }}<br>
+        {{ form.password(class="form-control input", type="password", placeholder=form.password.label.text) }}
+        <i class="far fa-eye" id="togglePassword"></i> <br>
+        <script language="JavaScript" type="text/javascript" src="static/js_scripts/password_toggle.js"></script>
         {% for error in form.password.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
