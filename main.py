@@ -117,7 +117,9 @@ def reqister():
                                    message="Пароли не совпадают")
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.email == form.email.data).first():
-            return render_template('common/register_page.html', title='Регистрация', form=form,
+            return render_template('common/register_page.html', title='Регистрация',
+                                   footer_inf=inf_dict['footer'],
+                                   logo_txt=inf_dict['logo_txt'], chat_btn_text=inf_dict['chat_btn_text'], form=form,
                                    message="Такой пользователь уже есть")
         user = User(
             name=form.name.data,
