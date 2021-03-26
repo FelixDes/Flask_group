@@ -4,9 +4,11 @@ from flask import Flask, render_template, redirect, session
 from flask_login import LoginManager, current_user
 from flask_socketio import SocketIO, send
 
-from Forms.user import RegisterForm
+from Forms.user import RegisterForm, LoginForm
 from data import db_session
 from data.users import User, Message
+
+from werkzeug.security import check_password_hash
 
 # ДЛЯ КОНСТАНТ
 path_json = "Res_json/str.json"
@@ -119,6 +121,25 @@ def reqister():
         db_sess.commit()
         return redirect('/login')
     return render_template('common/register_page.html', title='Регистрация', form=form)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    global c_user # Это очень криво сделанный текущий пользователь
+    form = LoginForm()
+    if form.email.data and form.password.data:  # Костыль
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.email == form.email.data).first()
+        if not user:
+            return render_template('common/login_page.html', title='Вход', form=form,
+                                   message="Такого пользователя не обнаружено")
+        elif not check_password_hash(user.hashed_password, form.password.data):
+            return render_template('common/login_page.html', title='Вход', form=form,
+                                   message="Неверный пароль")
+        else:
+            c_user = user
+            return redirect('/')
+    return render_template('common/login_page.html', title='Вход', form=form, message='')
 
 
 @app.route('/chat', methods=['GET', 'POST'])

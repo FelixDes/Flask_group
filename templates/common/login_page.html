@@ -1,0 +1,38 @@
+{% extends "common/base.html" %}
+
+{% block content %}
+
+<div class="normal_content">
+	<h1 herf="register">Авторизация</h1>
+    <form action="" method="post">
+    <p>
+        {{ form.email.label }}<br>
+        {{ form.email(class="form-control", type="email") }}<br>
+        {% for error in form.email.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.password.label }}<br>
+        {{ form.password(class="form-control", type="password") }}<br>
+        {% for error in form.password.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>{{ form.remember_me(type="checkbox", class="boolean-field") }}</p>
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    {{message}}
+</form>
+
+</div>
+{% endblock %}
+
+
+
+
+
+
