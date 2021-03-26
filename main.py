@@ -6,7 +6,8 @@ from flask_socketio import SocketIO, send
 
 from Forms.user import RegisterForm, LoginForm
 from data import db_session
-from data.users import User, Message
+from data.messages import Message
+from data.users import User
 
 from werkzeug.security import check_password_hash
 
@@ -37,14 +38,6 @@ app.config[
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 server_dict = {}
-
-
-def server_start_data_read(path_sever_json):
-    global server_dict
-    with open(path_sever_json) as file:
-        data = json.load(file)
-    for key, value in data.items():
-        server_dict.update({key: value})
 
 
 def parse_all(json_path):
@@ -79,10 +72,25 @@ def get_value(json_path, key):
         return "Что-то пошло не так"
 
 
-def main():
-    global json_dict
+inf_dict = parse_all(path_json)
+
+
+def server_start_data_read(path_sever_json):
+    global server_dict
+    with open(path_sever_json) as file:
+        data = json.load(file)
+    for key, value in data.items():
+        server_dict.update({key: value})
+
+
+def main(path_json_get="Res_json/str.json", path_sever_json_get="Res_json/server.json"):
+    global json_dict, path_json, path_sever_json
+    path_json = path_json_get
+    path_sever_json = path_sever_json_get
     json_dict = parse_all(path_json)
     db_session.global_init("db/main.db")
+    server_start_data_read(path_sever_json)
+    app.run(port=server_dict.get('port'))
 
 
 @login_manager.user_loader
@@ -92,8 +100,9 @@ def load_user(user_id):
 
 
 @app.route("/")
-def index():
-    inf_dict = parse_all(path_json)
+def index(reboot_arg=False, res_json=""):
+    if reboot_arg:
+        return res_json
     return render_template("common/main_page.html", interesting_information=inf_dict['text_about'],
                            information_list=inf_dict['text_about_our_work'],
                            logo_txt=inf_dict['logo_txt'], chat_btn_text=inf_dict['chat_btn_text'],
@@ -110,7 +119,9 @@ def reqister():
                                    message="Пароли не совпадают")
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.email == form.email.data).first():
-            return render_template('common/register_page.html', title='Регистрация', form=form,
+            return render_template('common/register_page.html', title='Регистрация',
+                                   footer_inf=inf_dict['footer'],
+                                   logo_txt=inf_dict['logo_txt'], chat_btn_text=inf_dict['chat_btn_text'], form=form,
                                    message="Такой пользователь уже есть")
         user = User(
             name=form.name.data,
@@ -120,7 +131,8 @@ def reqister():
         db_sess.add(user)
         db_sess.commit()
         return redirect('/login')
-    return render_template('common/register_page.html', title='Регистрация', form=form)
+    return render_template('common/register_page.html', title='Регистрация', footer_inf=inf_dict['footer'],
+                           logo_txt=inf_dict['logo_txt'], chat_btn_text=inf_dict['chat_btn_text'], form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -161,8 +173,11 @@ def handleMessage(data):
     db_sess.add(message)
     db_sess.commit()
 
+    messages = db_sess.query(Message).filter(Message.user == current_user)
+    res_dct = messages.to_dict()
+    res_json = json.dumps(res_dct)
+    index(reboot_arg=True, res_json=res_json)
+
 
 if __name__ == '__main__':
-    main()
-    server_start_data_read(path_sever_json)
-    app.run(port=server_dict.get('port'))
+    main(path_json, path_sever_json)

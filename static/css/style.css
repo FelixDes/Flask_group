@@ -112,13 +112,80 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .normal_content {
-	background-color: #F8F9F9;
+	background-color: #F9F9F9;
 	position: relative;
 	max-width: 1400px;
 
 	text-align: center;
 	margin: 0 auto;
 }
+
+
+/* register stuff */
+
+
+.register {
+	background-color: #F8F9F9;
+	position: relative;
+	max-width: 500px;
+	text-align: center;
+	padding: 20px;
+	margin: 0 auto;
+    margin-top: 10%;
+    border-radius: 16px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+
+}
+.register_label{
+    font-size: 30;
+    font-weight: 700;
+    /*font-family: 'Montserrat', sans-serif;*/
+}
+.input_label{
+    font-size: 25px;
+    align: center;
+
+}
+.input{
+    transition: color .2s linear;
+    border-radius: 5px;
+    width: 300px;
+    height: 30px;
+    border-width: 0px;
+
+}
+.input:hover{
+    border-color: #000000;
+    border-width: 1px;
+
+}
+
+.input:active{
+    color
+
+}
+
+.submit_btn{
+    border-radius: 5px;
+    width: 175px;
+    height: 30px;
+    border-width: 0px;
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #fc0
+}
+.submit_btn:hover{
+    border-width: 2px;
+    background-color: #fd0
+}
+
+.input_label i {
+    margin-left: -30px;
+    margin-top: 15px;
+    cursor: pointer;
+    font-size: 20px;
+    position: absolute;
+}
+/*end of register stuff*/
 
 
 .contact {
