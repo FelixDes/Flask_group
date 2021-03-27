@@ -89,8 +89,8 @@ def main(path_json_get="Res_json/str.json", path_sever_json_get="Res_json/server
     json_dict = parse_all(path_json)
     db_session.global_init("db/main.db")
     server_start_data_read(path_sever_json)
-    # socketio.run(app, port=server_dict.get('port'))
-    app.run(port=server_dict.get('port'))
+    socketio.run(app, port=server_dict.get('port'))
+    #app.run(port=server_dict.get('port'))
 
 
 @app.route("/")
@@ -160,15 +160,22 @@ def chat(reboot_arg=False, res_json=""):
         return render_template('common/chat_page.html', username=username)
 
 
-# @socketio.on('message')
-# def handleMessage(data):
-#     db_sess = db_session.create_session()
-#     print(f"Message: {data}")
-#     send(data, broadcast=True)
-#     message = Message(text=data['msg'])
-#     print(message)
-#     db_sess.add(message)
-#     db_sess.commit()
+@socketio.on('message')
+def handleMessage(data):
+    db_sess = db_session.create_session()
+    print(f"Message: {data}")
+    send(data, broadcast=True)
+    message = Message(text=data['msg'])
+    print(message)
+    db_sess.add(message)
+    db_sess.commit()
+
+    messages = db_sess.query(Message).filter(Message.user == c_user)
+    # print(messages)
+    # res_dct = messages.to_dict()
+    # res_json = json.dumps(res_dct)
+    # print(res_json)
+    # #chat(reboot_arg=True, res_json=res_json)
 
 
 if __name__ == '__main__':
