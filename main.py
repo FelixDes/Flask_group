@@ -1,9 +1,15 @@
 import json
 
-from flask import Flask, render_template, redirect
-from flask_login import LoginManager
+from flask import Flask, render_template, redirect, session
+from flask_login import LoginManager, current_user
 from flask_socketio import SocketIO, send
+
 from werkzeug.security import check_password_hash
+
+from Forms.user import RegisterForm, LoginForm
+from data import db_session
+from data.messages import Message
+from data.users import User
 
 # ДЛЯ КОНСТАНТ
 path_json = "Res_json/str.json"
@@ -24,19 +30,16 @@ path_sever_json = "Res_json/server.json"
 # footer - то, что будет отображаться в футере сайта
 
 app = Flask(__name__)
+login_manager = LoginManager()
+login_manager.init_app(app)
 app.config[
     'SECRET_KEY'] = "_ti{qxjXpNadwPPGaOh{zBawz^GBBpoIU|qpGpEVzgRzqhqeZ]hv_oeBhb|WBkmdRANtw}akIfMgOLm{r]ZnYiZcBFXZz{'"
 
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 c_user = None
 
 server_dict = {}
-
-from Forms.user import RegisterForm, LoginForm
-from data import db_session
-from data.messages import Message
-from data.users import User
 
 
 def parse_all(json_path):
@@ -89,8 +92,14 @@ def main(path_json_get="Res_json/str.json", path_sever_json_get="Res_json/server
     json_dict = parse_all(path_json)
     db_session.global_init("db/main.db")
     server_start_data_read(path_sever_json)
-    # socketio.run(app, port=server_dict.get('port'))
-    app.run(port=server_dict.get('port'))
+    socketio.run(app, port=server_dict.get('port'))
+    #app.run(port=server_dict.get('port'))
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    db_sess = db_session.create_session()
+    return db_sess.query(User).get(user_id)
 
 
 @app.route("/")
@@ -160,16 +169,27 @@ def chat(reboot_arg=False, res_json=""):
         return render_template('common/chat_page.html', username=username)
 
 
-# @socketio.on('message')
-# def handleMessage(data):
-#     db_sess = db_session.create_session()
-#     print(f"Message: {data}")
-#     send(data, broadcast=True)
-#     message = Message(text=data['msg'])
-#     print(message)
-#     db_sess.add(message)
-#     db_sess.commit()
+@socketio.on('message')
+def handleMessage(data):
+    db_sess = db_session.create_session()
+    print(f"Message: {data}")
+    send(data, broadcast=True)
+    message = Message(text=data['msg'])
+    print(message)
+    db_sess.add(message)
+    db_sess.commit()
+
+    messages = db_sess.query(Message).filter(Message.user == c_user)
+    messages = {'messages': {'user_id': i.user_id, 'id': i.id, 'text': i.text, 'created_date': i.created_date} for i in messages}
+    print(messages)
+    with open('Res_json/messages.json', 'w') as file:
+        json.dump(messages, file)
+    res_dct = messages.to_dict()
+    res_json = json.dumps(res_dct)
+    print(res_json)
+    #chat(reboot_arg=True, res_json=res_json)
 
 
 if __name__ == '__main__':
     main(path_json, path_sever_json)
+    socketio.run(app)
