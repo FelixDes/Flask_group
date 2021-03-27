@@ -179,7 +179,8 @@ def handleMessage(data):
     db_sess.add(message)
     db_sess.commit()
 
-    messages = db_sess.query(Message).filter(Message.user == current_user)
+    messages = db_sess.query(Message).filter(Message.user == c_user)
+    print(messages)
     res_dct = messages.to_dict()
     res_json = json.dumps(res_dct)
     print(res_json)
