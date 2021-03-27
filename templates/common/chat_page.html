@@ -2,45 +2,105 @@
 
 {% block content %}
 <div class="normal_content">
-	<div class="container mt-5 mb-4">
-        <h1>Chat Room</h1>
-    </div>
-
-    <div class="container my-5">
-        <div class="row">
-            <div class="col-5">
-                {% if username is none %}
-                    <form action="/login" id="form_set_username" autocomplete="off" novalidate method="POST">
-                        <div class="form-group">
-                            <label for="username_input">Your username:</label>
-                            <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username">
-                        </div>
-                        <button type="submit" class="btn btn-primary">LogIn</button>
-                    </form>
-                {% else %}
-                    <h2>Hello, <strong id="username">{{ username }}</strong></h2>
-                    <p><a href="/logout">Exit</a></p>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-
-    {% if username is not none %}
-        <div class="container">
-            <ul id="messages"></ul>
-            <div class="row">
-                <div class="col-7">
-                    <form id="form_send_msg" autocomplete="off" novalidate>
-                        <div class="form-group">
-                            <label for="message_input">Message:</label>
-                            <input type="text" class="form-control" id="message_input" placeholder="Enter your message here">
-                        </div>
-                        <button type="submit" id="send_msg" class="btn btn-success">Send</button>
-                    </form>
+	<div class="container my-5">
+    <div class="row">
+        <div class="col-5">
+            {% if username is none %}
+            <form action="/login" id="form_set_username" autocomplete="off" novalidate method="POST">
+                <div class="form-group">
+                    <label for="username_input">Your username:</label>
+                    <input type="text" class="form-control" id="username" name="username"
+                           placeholder="Enter your username">
                 </div>
-            </div>
+                <button type="submit" class="btn btn-primary">LogIn</button>
+            </form>
+            {% else %}
+            <h2>Hello, <strong id="username">{{ username }}</strong></h2>
+            <p><a href="/logout">Exit</a></p>
+            {% endif %}
         </div>
-    {% endif %}
-        
+    </div>
+</div>
+
+{% if username is not none %}
+<div class="container">
+    <ul id="messages"></ul>
+    <div class="row">
+        <div class="col-7">
+            <form id="form_send_msg" autocomplete="off" novalidate>
+                <div class="form-group">
+                    <label for="message_input">Message:</label>
+                    <input type="text" class="form-control" id="message_input" placeholder="Enter your message here">
+                </div>
+                <button type="submit" id="send_msg" class="btn btn-success">Send</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- <ul id="messages"></ul>
+<input type="text" id="message_input" placeholder="Enter your message here">
+<button id="send_msg">Send</button> -->
+
+
+
+{% if username is not none %}
+
+<script>
+$("#search_form_input").keyup(function(){
+    var text = $(this).val();
+
+    $.ajax({
+      url: "/suggestions",
+      type: "get",
+      data: {jsdata: text},
+      success: function(response) {
+        $("#place_for_suggestions").html(response);
+      },
+      error: function(xhr) {
+        //Do Something to handle error
+      }
+    });
+});
+
+</script>
+
+<script>
+            $(document).ready(() => {
+                $('#form_send_msg').on('submit', (e) => {
+                    e.preventDefault();
+                });
+
+                const socket = io.connect('http://127.0.0.1:5000/chat');
+                const username = $('#username').text();
+
+                socket.on('connect', () => {
+                    socket.send({'username': 'Service message', 'msg': 'User ' + username + ' has connected!'});
+                });
+
+                $('#send_msg').on('click', () => {
+                    socket.send({
+                            'msg': $('#message_input').val(),
+                            'username': username
+                        });
+                    $('#message_input').val('');
+                });
+
+                socket.on('message', data => {
+                    if (data.msg.length > 0) {
+                        if (data.username === 'Service message') {
+                            $('#messages').append(`<li class="text-muted"><strong>${data.username}:</strong> ${data.msg}</li>`);
+                        } else {
+                            $('#messages').append(`<li><strong>${data.username}:</strong> ${data.msg}</li>`);
+                        }
+                        console.log('Received message');
+                    }
+                });
+            });
+
+</script>
+{% endif %}
+
 </div>
 {% endblock %}
