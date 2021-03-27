@@ -32,7 +32,8 @@ h1, h2, h3, h4, h5, h6 {
 	height: 100vh;
 	background: url("/static/assets/intro.jfif") center no-repeat;
 	background-size: cover;
-	z-index: 1000;
+	position: relative;
+	z-index: 1;
 }
 
 .about {
@@ -119,6 +120,7 @@ h1, h2, h3, h4, h5, h6 {
 
 	text-align: center;
 	margin: 0 auto;
+	z-index: -1;
 }
 
 
@@ -230,6 +232,7 @@ h1, h2, h3, h4, h5, h6 {
 	padding: 20px;
 	background-color: #000;
 	margin-top: auto;
+	z-index: 1;
 }
 
 h3 {
@@ -280,7 +283,7 @@ h4 {
   font-family: 'Montserrat', sans-serif;
   text-transform: uppercase;
   letter-spacing: 2px;
-  z-index: 1;
+  z-index: 0;
 }
 .bottom_chat_button:before, .bottom_chat_button:after {
   content: "";
