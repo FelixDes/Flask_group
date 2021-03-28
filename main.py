@@ -1,7 +1,7 @@
 import json
 
 from flask import Flask, render_template, redirect
-from flask_login import LoginManager
+from flask_login import LoginManager, login_user, current_user
 from flask_socketio import SocketIO, send
 from werkzeug.security import check_password_hash
 
@@ -149,7 +149,7 @@ def login():
                                    message="Неверный пароль")
         else:
             c_user = user
-            print(type(c_user), c_user)
+            login_user(user, remember=form.remember_me.data)
             return redirect('/')
     return render_template('common/login_page.html', title='Вход', logo_txt=inf_dict['logo_txt'], form=form,
                            footer_inf=inf_dict['footer'], chat_btn_text=inf_dict['chat_btn_text'],
@@ -161,7 +161,7 @@ def chat(reboot_arg=False, res_json=""):
     if reboot_arg:
         return res_json
     username = None
-    if c_user is None:
+    if not str(current_user).split('>')[0] == '<User':
         return redirect("/login")
     else:
         return render_template('common/chat_page.html', username=username)
@@ -177,7 +177,7 @@ def handleMessage(data):
     db_sess.add(message)
     db_sess.commit()
 
-    messages = db_sess.query(Message).filter(Message.user == c_user)
+    messages = db_sess.query(Message).filter(Message.user == current_user)
     messages = {'messages': {'user_id': i.user_id, 'id': i.id, 'text': i.text,
                              'created_date': i.created_date.strftime("%H:%M:%S")} for i in messages}
     with open('Res_json/messages.json', 'w') as file:
