@@ -92,7 +92,6 @@ def main(path_json_get="Res_json/str.json", path_sever_json_get="Res_json/server
     db_session.global_init("db/main.db")
     server_start_data_read(path_sever_json)
     socketio.run(app, port=server_dict.get('port'))
-    # app.run(port=server_dict.get('port'))
 
 
 @login_manager.user_loader
