@@ -10,6 +10,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Res_json\messages.json">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Res_json\str.json">
           <value>
             <Attribute>

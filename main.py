@@ -1,7 +1,7 @@
 import json
 
 from flask import Flask, render_template, redirect
-from flask_login import LoginManager, login_user, current_user
+from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from flask_socketio import SocketIO, send
 from werkzeug.security import check_password_hash
 
@@ -99,6 +99,12 @@ def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
+
 
 @app.route("/")
 def index():
@@ -136,7 +142,7 @@ def reqister():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    global c_user  # Это очень криво сделанный текущий пользователь; Teamlead: ладно
+    #global c_user  # Это очень криво сделанный текущий пользователь; Teamlead: ладно
     form = LoginForm()
     if form.email.data and form.password.data:  # Костыль
         db_sess = db_session.create_session()
@@ -148,7 +154,7 @@ def login():
             return render_template('common/login_page.html', title='Вход', form=form,
                                    message="Неверный пароль")
         else:
-            c_user = user
+            #c_user = user
             login_user(user, remember=form.remember_me.data)
             return redirect('/')
     return render_template('common/login_page.html', title='Вход', logo_txt=inf_dict['logo_txt'], form=form,
@@ -172,9 +178,11 @@ def handleMessage(data):
     db_sess = db_session.create_session()
     print(f"Message: {data}")
     send(data, broadcast=True)
-    message = Message(text=data['msg'])
+    message = Message()
+    message.text = data['msg']
+    current_user.messages.append(message)
     print(message)
-    db_sess.add(message)
+    db_sess.merge(current_user)
     db_sess.commit()
 
     messages = db_sess.query(Message).filter(Message.user == current_user)
