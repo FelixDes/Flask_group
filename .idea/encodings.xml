@@ -4,6 +4,7 @@
     <file url="file://$PROJECT_DIR$/Forms/user.py" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/data/__all_models.py" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/db/main.db" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/static/db/main.db" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/templates/common/base.html" charset="windows-1251" />
     <file url="PROJECT" charset="UTF-8" />
   </component>

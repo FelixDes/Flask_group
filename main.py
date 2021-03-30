@@ -74,7 +74,7 @@ def get_value(json_path, key):
 
 
 inf_dict = parse_all(path_json)
-
+path_intro_image = "/static/assets/intro.jfif"
 
 def server_start_data_read(path_sever_json):
     global server_dict
@@ -84,10 +84,11 @@ def server_start_data_read(path_sever_json):
         server_dict.update({key: value})
 
 
-def main(path_json_get="Res_json/str.json", path_sever_json_get="Res_json/server.json"):
-    global json_dict, path_json, path_sever_json
+def main(path_json_get="Res_json/str.json", path_sever_json_get="Res_json/server.json", path_intro_image_get="static/assets/intro.jfif"):
+    global json_dict, path_json, path_sever_json, path_intro_image
     path_json = path_json_get
     path_sever_json = path_sever_json_get
+    path_intro_image = path_intro_image_get
     json_dict = parse_all(path_json)
     db_session.global_init("db/main.db")
     server_start_data_read(path_sever_json)
@@ -112,7 +113,7 @@ def index():
                            information_list=inf_dict['text_about_our_work'],
                            logo_txt=inf_dict['logo_txt'], chat_btn_text=inf_dict['chat_btn_text'],
                            connection_list=inf_dict['how_to_contact_us'], how_to_find_us=inf_dict['how_to_find_us'],
-                           footer_inf=inf_dict['footer'])
+                           footer_inf=inf_dict['footer'], intro_image=path_intro_image)
 
 
 @app.route('/register', methods=['GET', 'POST'])

@@ -27,14 +27,14 @@ h1, h2, h3, h4, h5, h6 {
 	margin: 0 auto;
 }
 
-.intro {
+/*.intro {
 	width: 100%;
 	height: 100vh;
 	background: url("/static/assets/intro.jfif") center no-repeat;
 	background-size: cover;
 	position: relative;
 	z-index: 1;
-}
+}*/
 
 .about {
     padding: 20px;
