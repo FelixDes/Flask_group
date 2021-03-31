@@ -182,18 +182,22 @@ def handleMessage(data):
     send(data, broadcast=True)
     message = Message()
     message.text = data['msg']
-    message.is_from_admin = current_user.get_role()
-    message.user_name = current_user.get_name()
-    print(message)
+    try:
+        message.is_from_admin = current_user.get_role()
+        message.user_name = current_user.get_id()
+    except AttributeError:
+        message.is_from_admin = False
+        message.user_name = 'Anonymous'
     db_sess.add(message)
     db_sess.commit()
 
-    messages = db_sess.query(Message)
-    messages = {'messages': {'id': i.get_id(), 'name': i.user_name, 'text': i.text, 'role_of_user': i.is_from_admin,
-                             'created_date': i.created_date.strftime("%H:%M:%S")} for i in messages}
+    messages = db_sess.query(Message).filter()
+    messages_dict = {'messages': {i.id: {'name': i.user_name, 'text': i.text,
+                             'created_date': i.created_date.strftime("%H:%M:%S")} for i in messages}}
+    json_data = messages_dict
     with open('Res_json/messages.json', 'w') as file:
-        json.dump(messages, file)
-    res_json = json.dumps(messages)
+        json.dump(json_data, file)
+    res_json = json.dumps(json_data)
     print("res_json:", res_json)
     # chat(reboot_arg=True, res_json=res_json)
 
