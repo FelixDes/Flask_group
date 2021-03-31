@@ -17,8 +17,8 @@ def file_not_found(arg, path):
 
 def create_boot_file():
     with open("boot.py", "w") as boot_file:
-        boot_file.write("import main\nmain.main('{path_json}', '{path_sever_json}')".format(path_json=path_json,
-                                                                                            path_sever_json=path_sever_json))
+        boot_file.write("import main\nmain.main('{path_json}', '{path_sever_json}','{path_intro_image}')".format(path_json=path_json,
+                                                                                            path_sever_json=path_sever_json, path_intro_image=path_intro_image))
 
 
 def run_main(path_json, path_sever_json, path_intro_image):

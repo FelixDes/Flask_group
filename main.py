@@ -179,21 +179,21 @@ def handleMessage(data):
     db_sess = db_session.create_session()
     print(f"Message: {data}")
     send(data, broadcast=True)
-    message = Message()
-    message.text = data['msg']
-    current_user.messages.append(message)
-    print(message)
-    db_sess.merge(current_user)
-    db_sess.commit()
-
-    messages = db_sess.query(Message).filter(Message.user == current_user)
-    messages = {'messages': {'user_id': i.user_id, 'id': i.id, 'text': i.text,
-                             'created_date': i.created_date.strftime("%H:%M:%S")} for i in messages}
-    with open('Res_json/messages.json', 'w') as file:
-        json.dump(messages, file)
-    res_json = json.dumps(messages)
-    print("res_json:", res_json)
-    # chat(reboot_arg=True, res_json=res_json)
+    # message = Message()
+    # message.text = data['msg']
+    # current_user.messages.append(message)
+    # print(message)
+    # db_sess.merge(current_user)
+    # db_sess.commit()
+    #
+    # messages = db_sess.query(Message).filter(Message.user == current_user)
+    # messages = {'messages': {'user_id': i.user_id, 'id': i.id, 'text': i.text,
+    #                          'created_date': i.created_date.strftime("%H:%M:%S")} for i in messages}
+    # with open('Res_json/messages.json', 'w') as file:
+    #     json.dump(messages, file)
+    # res_json = json.dumps(messages)
+    # print("res_json:", res_json)
+    # # chat(reboot_arg=True, res_json=res_json)
 
 
 if __name__ == '__main__':
