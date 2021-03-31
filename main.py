@@ -178,22 +178,24 @@ def chat(reboot_arg=False, res_json=""):
 def handleMessage(data):
     db_sess = db_session.create_session()
     print(f"Message: {data}")
+    print(current_user)
     send(data, broadcast=True)
-    # message = Message()
-    # message.text = data['msg']
-    # current_user.messages.append(message)
-    # print(message)
-    # db_sess.merge(current_user)
-    # db_sess.commit()
-    #
-    # messages = db_sess.query(Message).filter(Message.user == current_user)
-    # messages = {'messages': {'user_id': i.user_id, 'id': i.id, 'text': i.text,
-    #                          'created_date': i.created_date.strftime("%H:%M:%S")} for i in messages}
-    # with open('Res_json/messages.json', 'w') as file:
-    #     json.dump(messages, file)
-    # res_json = json.dumps(messages)
-    # print("res_json:", res_json)
-    # # chat(reboot_arg=True, res_json=res_json)
+    message = Message()
+    message.text = data['msg']
+    message.is_from_admin = current_user.get_role()
+    message.user_name = current_user.get_name()
+    print(message)
+    db_sess.add(message)
+    db_sess.commit()
+
+    messages = db_sess.query(Message)
+    messages = {'messages': {'id': i.get_id(), 'name': i.user_name, 'text': i.text, 'role_of_user': i.is_from_admin,
+                             'created_date': i.created_date.strftime("%H:%M:%S")} for i in messages}
+    with open('Res_json/messages.json', 'w') as file:
+        json.dump(messages, file)
+    res_json = json.dumps(messages)
+    print("res_json:", res_json)
+    # chat(reboot_arg=True, res_json=res_json)
 
 
 if __name__ == '__main__':
