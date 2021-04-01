@@ -76,6 +76,7 @@ def get_value(json_path, key):
 inf_dict = parse_all(path_json)
 path_intro_image = "/static/assets/intro.jfif"
 
+
 def server_start_data_read(path_sever_json):
     global server_dict
     with open(path_sever_json) as file:
@@ -84,7 +85,8 @@ def server_start_data_read(path_sever_json):
         server_dict.update({key: value})
 
 
-def main(path_json_get="Res_json/str.json", path_sever_json_get="Res_json/server.json", path_intro_image_get="static/assets/intro.jfif"):
+def main(path_json_get="Res_json/str.json", path_sever_json_get="Res_json/server.json",
+         path_intro_image_get="static/assets/intro.jfif"):
     global json_dict, path_json, path_sever_json, path_intro_image
     path_json = path_json_get
     path_sever_json = path_sever_json_get
@@ -100,6 +102,7 @@ def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
 
+
 @app.route('/logout')
 @login_required
 def logout():
@@ -109,7 +112,8 @@ def logout():
 
 @app.route("/")
 def index():
-    return render_template("common/main_page.html", interesting_information=inf_dict['text_about'],
+    return render_template("common/main_page.html", title=inf_dict['title_main'],
+                           interesting_information=inf_dict['text_about'],
                            information_list=inf_dict['text_about_our_work'],
                            logo_txt=inf_dict['logo_txt'], chat_btn_text=inf_dict['chat_btn_text'],
                            connection_list=inf_dict['how_to_contact_us'], how_to_find_us=inf_dict['how_to_find_us'],
@@ -121,11 +125,11 @@ def reqister():
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
-            return render_template('common/register_page.html', title='Регистрация', form=form,
+            return render_template('common/register_page.html', title=inf_dict['title_registration'], form=form,
                                    message="Пароли не совпадают")
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.email == form.email.data).first():
-            return render_template('common/register_page.html', title='Регистрация',
+            return render_template('common/register_page.html', title=inf_dict['title_registration'],
                                    footer_inf=inf_dict['footer'],
                                    logo_txt=inf_dict['logo_txt'], chat_btn_text=inf_dict['chat_btn_text'], form=form,
                                    message="Такой пользователь уже есть")
@@ -137,28 +141,30 @@ def reqister():
         db_sess.add(user)
         db_sess.commit()
         return redirect('/login')
-    return render_template('common/register_page.html', title='Регистрация', footer_inf=inf_dict['footer'],
+    return render_template('common/register_page.html', title=inf_dict['title_registration'],
+                           footer_inf=inf_dict['footer'],
                            logo_txt=inf_dict['logo_txt'], chat_btn_text=inf_dict['chat_btn_text'], form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    #global c_user  # Это очень криво сделанный текущий пользователь; Teamlead: ладно
+    # global c_user  # Это очень криво сделанный текущий пользователь; Teamlead: ладно
     form = LoginForm()
     if form.email.data and form.password.data:  # Костыль
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if not user:
-            return render_template('common/login_page.html', title='Вход', form=form,
+            return render_template('common/login_page.html', title=inf_dict['title_login'], form=form,
                                    message="Такого пользователя не обнаружено")
         elif not check_password_hash(user.hashed_password, form.password.data):
-            return render_template('common/login_page.html', title='Вход', form=form,
+            return render_template('common/login_page.html', title=inf_dict['title_login'], form=form,
                                    message="Неверный пароль")
         else:
-            #c_user = user
+            # c_user = user
             login_user(user, remember=form.remember_me.data)
             return redirect('/')
-    return render_template('common/login_page.html', title='Вход', logo_txt=inf_dict['logo_txt'], form=form,
+    return render_template('common/login_page.html', title=inf_dict['title_login'], logo_txt=inf_dict['logo_txt'],
+                           form=form,
                            footer_inf=inf_dict['footer'], chat_btn_text=inf_dict['chat_btn_text'],
                            message='')
 
@@ -167,18 +173,17 @@ def login():
 def chat(reboot_arg=False, res_json=""):
     if reboot_arg:
         return res_json
-    username = None
     if not str(current_user).split('>')[0] == '<User':
         return redirect("/login")
     else:
-        return render_template('common/chat_page.html', username=username)
+        return render_template('common/chat_page.html', title=inf_dict['title_chat'], logo_txt=inf_dict['logo_txt'],
+                               footer_inf=inf_dict['footer'], username=username)
 
 
 @socketio.on('message')
 def handleMessage(data):
     db_sess = db_session.create_session()
     print(f"Message: {data}")
-    print(current_user)
     send(data, broadcast=True)
     message = Message()
     message.text = data['msg']
@@ -193,13 +198,27 @@ def handleMessage(data):
 
     messages = db_sess.query(Message).filter()
     messages_dict = {'messages': {i.id: {'name': i.user_name, 'text': i.text,
-                             'created_date': i.created_date.strftime("%H:%M:%S")} for i in messages}}
+                                         'created_date': i.created_date.strftime("%H:%M:%S")} for i in messages}}
     json_data = messages_dict
     with open('Res_json/messages.json', 'w') as file:
         json.dump(json_data, file)
     res_json = json.dumps(json_data)
-    print("res_json:", res_json)
     # chat(reboot_arg=True, res_json=res_json)
+
+
+@app.route('/administrate', methods=['GET', 'POST'])
+def administrate():
+    current_user.set_role(True)
+    if current_user.get_role():
+        db_sess = db_session.create_session()
+        users = db_sess.query(User).filter()
+        users_dict = []
+        for i in users:
+            users_dict.append(
+                f"ID: {i.id}, NAME: {i.name}, EMAIL: {i.email}, DATE OF CREATION OF THIS ACCOUNT: {i.created_date.strftime('%H:%M:%S')}")
+        return render_template('common/adm.html', title=inf_dict['title_administration'],
+                               logo_txt=inf_dict['logo_txt'],
+                               footer_inf=inf_dict['footer'], users_dict=users_dict)
 
 
 if __name__ == '__main__':

@@ -37,3 +37,5 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     def get_role(self):
         return self.is_admin
 
+    def set_role(self, bool):
+        self.is_admin = bool
