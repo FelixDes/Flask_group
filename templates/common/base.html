@@ -52,8 +52,13 @@
                     <a class="nav_link" href="/#about">О НАС</a>
                     <a class="nav_link" href="/#find_us">ГДЕ МЫ НАХОДИМСЯ</a>
                     <a class="nav_link" href="/#connect">СВЯЗАТЬСЯ С НАМИ</a>
+                    {% if not anonymous %}
                     <a class="nav_link" href="/register">РЕГИСТРАЦИЯ</a>
                     <a class="nav_link" href="/login">ВХОД</a>
+                    {% else %}
+                    <a class="nav_link" href="/logout">ВЫХОД</a>
+                    <a class="nav_link">{{ c_user.name.upper() }}</a>
+                    {% endif %}
                 </nav>
             </div>
 
