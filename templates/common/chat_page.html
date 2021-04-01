@@ -20,10 +20,6 @@
     </div>
 </div>
 
-<!-- <ul id="messages"></ul>
-<input type="text" id="message_input" placeholder="Enter your message here">
-<button id="send_msg">Send</button> -->
-
 
 
 {% if username is not none %}
@@ -40,7 +36,7 @@ $("#search_form_input").keyup(function(){
         $("#place_for_suggestions").html(response);
       },
       error: function(xhr) {
-        //Do Something to handle error
+        //Место для хендлера ошибок
       }
     });
 });
@@ -55,10 +51,6 @@ $("#search_form_input").keyup(function(){
 
                 const socket = io.connect('http://127.0.0.1:5000/chat');
                 const username = $('#username').text();
-
-                socket.on('connect', () => {
-                    socket.send({'username': 'Service message', 'msg': 'User ' + username + ' has connected!'});
-                });
 
                 $('#send_msg').on('click', () => {
                     socket.send({

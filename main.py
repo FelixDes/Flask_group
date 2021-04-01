@@ -173,6 +173,8 @@ def login():
 def chat(reboot_arg=False, res_json=""):
     if reboot_arg:
         return res_json
+    username = str(current_user.name)
+    print(username)
     if not str(current_user).split('>')[0] == '<User':
         return redirect("/login")
     else:
@@ -189,7 +191,7 @@ def handleMessage(data):
     message.text = data['msg']
     try:
         message.is_from_admin = current_user.get_role()
-        message.user_name = current_user.get_id()
+        message.user_name = current_user.get_name()
     except AttributeError:
         message.is_from_admin = False
         message.user_name = 'Anonymous'
