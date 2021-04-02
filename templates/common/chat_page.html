@@ -2,19 +2,19 @@
 
 {% block content %}
 
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"-->
+<!--          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">-->
 
 <div class="container">
-    <ul id="messages"></ul>
+    <ul id="messages" class="messages"></ul>
     <div class="row">
         <div class="col-7">
-            <form id="form_send_msg" autocomplete="off" novalidate>
+            <form id="form_send_msg" class="chat" autocomplete="off" novalidate>
                 <div class="form-group">
                     <label for="message_input">Message:</label>
-                    <input type="text" class="form-control" id="message_input" placeholder="Enter your message here">
+                    <input type="text" class="form-control input" id="message_input" placeholder="Enter your message here">
+                    <button type="submit" id="send_msg" class="btn btn-success submit_btn">Send</button>
                 </div>
-                <button type="submit" id="send_msg" class="btn btn-success">Send</button>
             </form>
         </div>
     </div>
