@@ -41,7 +41,7 @@ c_user = None
 server_dict = {}
 
 
-def parse_all(json_path):
+def parse_all(json_path):  # Ф-ция парсинга json-а
     try:
         with open(json_path, "r", encoding='utf-8') as file:
             json_dict = json.load(file)
@@ -134,14 +134,14 @@ def reqister():
                                    footer_inf=inf_dict['footer'],
                                    logo_txt=inf_dict['logo_txt'], chat_btn_text=inf_dict['chat_btn_text'], form=form,
                                    message="Такой пользователь уже есть")
-        user = User(
+        user = User(    # Создание нового пользователя
             name=form.name.data,
             email=form.email.data,
         )
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
-        return redirect('/login')
+        return redirect('/login')   # Переадресация на страницу входа
     return render_template('common/register_page.html', title=inf_dict['title_registration'],
                            footer_inf=inf_dict['footer'],
                            logo_txt=inf_dict['logo_txt'], chat_btn_text=inf_dict['chat_btn_text'], form=form)
@@ -149,19 +149,17 @@ def reqister():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # global c_user  # Это очень криво сделанный текущий пользователь; Teamlead: ладно
     form = LoginForm()
-    if form.email.data and form.password.data:  # Костыль
+    if form.email.data and form.password.data:
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if not user:
             return render_template('common/login_page.html', title=inf_dict['title_login'], form=form,
-                                   message="Такого пользователя не обнаружено")
+                                   message="Такого пользователя не обнаружено")     # Если пользователь отсутствует в базе данных
         elif not check_password_hash(user.hashed_password, form.password.data):
             return render_template('common/login_page.html', title=inf_dict['title_login'], form=form,
                                    message="Неверный пароль")
         else:
-            # c_user = user
             login_user(user, remember=form.remember_me.data)
             return redirect('/')
     return render_template('common/login_page.html', title=inf_dict['title_login'], logo_txt=inf_dict['logo_txt'],
@@ -194,7 +192,7 @@ def handleMessage(data):
     send(data, broadcast=True)
     message = Message()
     message.text = data['msg']
-    try:
+    try:    # Предотвращение ошибок в случае анонимного пользователя
         message.is_from_admin = current_user.get_role()
         message.user_name = current_user.get_name()
     except AttributeError:
