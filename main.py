@@ -117,7 +117,8 @@ def index():
                            information_list=inf_dict['text_about_our_work'],
                            logo_txt=inf_dict['logo_txt'], chat_btn_text=inf_dict['chat_btn_text'],
                            connection_list=inf_dict['how_to_contact_us'], how_to_find_us=inf_dict['how_to_find_us'],
-                           footer_inf=inf_dict['footer'], intro_image=path_intro_image)
+                           footer_inf=inf_dict['footer'], intro_image=path_intro_image,
+                           anonymous=str(current_user).split('>')[0] == '<User', c_user=current_user)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -173,7 +174,10 @@ def login():
 def chat(reboot_arg=False, res_json=""):
     if reboot_arg:
         return res_json
-    username = str(current_user.name)
+    try:
+        username = str(current_user.name)
+    except AttributeError:
+        username = 'Anonymous'
     print(username)
     if not str(current_user).split('>')[0] == '<User':
         return redirect("/login")
