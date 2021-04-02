@@ -57,7 +57,7 @@
                     <a class="nav_link" href="/login">ВХОД</a>
                     {% else %}
                     <a class="nav_link" href="/logout">ВЫХОД</a>
-                    <a class="nav_link">{{ c_user.name.upper() }}</a>
+                    <a class="nav_link" id="username">{{ c_user.name.upper() }}</a>
                     {% endif %}
                 </nav>
             </div>

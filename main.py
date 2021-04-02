@@ -183,7 +183,8 @@ def chat(reboot_arg=False, res_json=""):
         return redirect("/login")
     else:
         return render_template('common/chat_page.html', title=inf_dict['title_chat'], logo_txt=inf_dict['logo_txt'],
-                               footer_inf=inf_dict['footer'], username=username)
+                               footer_inf=inf_dict['footer'],
+                               username=username, anonymous=str(current_user).split('>')[0] == '<User', c_user=current_user)
 
 
 @socketio.on('message')
@@ -224,7 +225,8 @@ def administrate():
                 f"ID: {i.id}, NAME: {i.name}, EMAIL: {i.email}, DATE OF CREATION OF THIS ACCOUNT: {i.created_date.strftime('%H:%M:%S')}")
         return render_template('common/adm.html', title=inf_dict['title_administration'],
                                logo_txt=inf_dict['logo_txt'],
-                               footer_inf=inf_dict['footer'], users_dict=users_dict)
+                               footer_inf=inf_dict['footer'], users_dict=users_dict,
+                               anonymous=str(current_user).split('>')[0] == '<User', c_user=current_user)
 
 
 if __name__ == '__main__':
