@@ -5,7 +5,7 @@
 <div class="container">
     <ul id="messages" class="messages">
         {% for item in message_lst %}
-        <li>item</li>
+        <li>{{ item|safe }}</li>
         {% endfor %}
     </ul>
     <div class="row">
