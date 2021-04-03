@@ -134,14 +134,14 @@ def reqister():
                                    footer_inf=inf_dict['footer'],
                                    logo_txt=inf_dict['logo_txt'], chat_btn_text=inf_dict['chat_btn_text'], form=form,
                                    message="Такой пользователь уже есть")
-        user = User(    # Создание нового пользователя
+        user = User(  # Создание нового пользователя
             name=form.name.data,
             email=form.email.data,
         )
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
-        return redirect('/login')   # Переадресация на страницу входа
+        return redirect('/login')  # Переадресация на страницу входа
     return render_template('common/register_page.html', title=inf_dict['title_registration'],
                            footer_inf=inf_dict['footer'],
                            logo_txt=inf_dict['logo_txt'], chat_btn_text=inf_dict['chat_btn_text'], form=form)
@@ -155,7 +155,7 @@ def login():
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if not user:
             return render_template('common/login_page.html', title=inf_dict['title_login'], form=form,
-                                   message="Такого пользователя не обнаружено")     # Если пользователь отсутствует в базе данных
+                                   message="Такого пользователя не обнаружено")  # Если пользователь отсутствует в базе данных
         elif not check_password_hash(user.hashed_password, form.password.data):
             return render_template('common/login_page.html', title=inf_dict['title_login'], form=form,
                                    message="Неверный пароль")
@@ -169,9 +169,20 @@ def login():
 
 
 @app.route('/chat', methods=['GET', 'POST'])
-def chat(reboot_arg=False, res_json=""):
-    if reboot_arg:
-        return res_json
+def chat():
+    db_sess = db_session.create_session()
+    messages = db_sess.query(Message).filter()
+    messages_dict = {'messages': {i.id: {'name': i.user_name, 'text': i.text,
+                                         'created_date': i.created_date.strftime("%H:%M:%S")} for i in messages}}
+    # json_data = messages_dict
+    # with open('Res_json/messages.json', 'w') as file:
+    #     json.dump(json_data, file)
+    # res_json = json.dumps(json_data)
+
+    message_lst = [f"<strong>{i.user_name}:</strong> {i.text}" for i in messages]
+
+    print(message_lst)
+
     try:
         username = str(current_user.name)
     except AttributeError:
@@ -182,7 +193,8 @@ def chat(reboot_arg=False, res_json=""):
     else:
         return render_template('common/chat_page.html', title=inf_dict['title_chat'], logo_txt=inf_dict['logo_txt'],
                                footer_inf=inf_dict['footer'],
-                               username=username, anonymous=str(current_user).split('>')[0] == '<User', c_user=current_user)
+                               username=username, anonymous=str(current_user).split('>')[0] == '<User',
+                               c_user=current_user, message_lst=message_lst)
 
 
 @socketio.on('message')
@@ -192,7 +204,7 @@ def handleMessage(data):
     send(data, broadcast=True)
     message = Message()
     message.text = data['msg']
-    try:    # Предотвращение ошибок в случае анонимного пользователя
+    try:  # Предотвращение ошибок в случае анонимного пользователя
         message.is_from_admin = current_user.get_role()
         message.user_name = current_user.get_name()
     except AttributeError:
@@ -200,15 +212,6 @@ def handleMessage(data):
         message.user_name = 'Anonymous'
     db_sess.add(message)
     db_sess.commit()
-
-    messages = db_sess.query(Message).filter()
-    messages_dict = {'messages': {i.id: {'name': i.user_name, 'text': i.text,
-                                         'created_date': i.created_date.strftime("%H:%M:%S")} for i in messages}}
-    json_data = messages_dict
-    with open('Res_json/messages.json', 'w') as file:
-        json.dump(json_data, file)
-    res_json = json.dumps(json_data)
-    # chat(reboot_arg=True, res_json=res_json)
 
 
 @app.route('/administrate', methods=['GET', 'POST'])

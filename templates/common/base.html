@@ -2,43 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="/static/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;1,200&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;1,200&display=swap"
+          rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
     <script src="https://api-maps.yandex.ru/2.1/?apikey=6fbbac3f-f88d-4d13-b6c0-dcfb9e2829bd&lang=ru_RU"
             type="text/javascript">
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
     <script language="JavaScript" type="text/javascript" src="static/js_scripts/jquery-3.6.0.min.js"></script>
     <script language="JavaScript" type="text/javascript" src="static/js_scripts/map_script.js"></script>
     <script language="JavaScript" type="text/javascript" src="static/js_scripts/scroll_helper.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"
-        integrity="sha256-bQmrZe4yPnQrLTY+1gYylfNMBuGfnT/HKsCGX+9Xuqo=" crossorigin="anonymous"></script>
-    <script>
-            $(document).ready(() => {
-                $('#form_send_msg').on('submit', (e) => {
-                    e.preventDefault();
-                });
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"
+            integrity="sha256-bQmrZe4yPnQrLTY+1gYylfNMBuGfnT/HKsCGX+9Xuqo=" crossorigin="anonymous"></script>
 
-                const socket = io.connect('http://127.0.0.1:5000');
-                const username = $('#username').text();
-
-                socket.on('connect', () => {
-                    socket.send({'username': 'Service message', 'msg': 'User ' + username + ' has connected!'});
-                });
-
-                $('#send_msg').on('click', () => {
-                    socket.send({
-                            'msg': $('#message_input').val(),
-                            'username': username
-                        });
-                    $('#message_input').val('');
-                });
-            });
-
-    </script>
-    
     <title>{{ title }}</title>
 </head>
 <body>
@@ -57,7 +39,7 @@
                     <a class="nav_link" href="/login">ВХОД</a>
                     {% else %}
                     <a class="nav_link" href="/logout">ВЫХОД</a>
-                    <a class="nav_link" id="username">{{ c_user.name.upper() }}</a>
+                    <a class="nav_link"><strong id="username">{{ c_user.name.upper() }}</strong></a>
                     {% endif %}
                 </nav>
             </div>
@@ -75,7 +57,7 @@
     </div>
     <footer class="footer">
         {% for item in footer_inf %}
-            <p class="contact">{{ item }}</p>
+        <p class="contact">{{ item }}</p>
         {% endfor %}
     </footer>
 
