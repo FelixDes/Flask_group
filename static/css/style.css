@@ -140,6 +140,23 @@ h1, h2, h3, h4, h5, h6 {
     padding-left: 40px;
     border: solid 1px black; /* Параметры рамки */
 }
+
+.users_table {
+    background-color: #F8F9F9;
+    align-text: right;
+    border-size: 5px;
+    max-width: 700px;
+    margin: 0 auto;
+    margin-top: 1%;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    border-radius: 5px;
+}
+
+.users_td {
+    padding: 15px;
+}
+
+
 .messages::-webkit-scrollbar {
   width: 10px;
   height: 100px;
@@ -152,6 +169,7 @@ h1, h2, h3, h4, h5, h6 {
 .messages::-webkit-scrollbar-thumb {
   border-radius: 5px;
   background-color: gray
+  list-style-type: none;
 }
 
 .chat{
@@ -168,7 +186,7 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 16px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
     z-index: 0;
-    }
+}
 
 
 .chat_submit_btn{

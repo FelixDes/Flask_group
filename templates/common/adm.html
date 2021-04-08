@@ -1,0 +1,22 @@
+{% extends "common/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 align="center" style="padding-top: 50px; padding-bottom: 0px">Пользователи</h1>
+    <table id="users_table" class="users_table">
+        <tr class="th_users">
+            <th>ID</th>
+            <th>NAME</th>
+            <th>EMAIL</th>
+            <th>CREATED_DATE</th>
+        </tr>
+        {% for item in users_lst %}
+            <tr>
+                {% for i in item %}
+                <td class="users_td">{{i}}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

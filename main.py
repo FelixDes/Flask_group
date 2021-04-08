@@ -179,7 +179,7 @@ def chat():
     #     json.dump(json_data, file)
     # res_json = json.dumps(json_data)
 
-    message_lst = [f"<strong>{i.user_name}:</strong> {i.text}" for i in messages]
+    message_lst = [f"<strong>{i.user_name}:</strong> {i.text} <sub>{i.created_date.strftime('%H:%M:%S')}</sub>" for i in messages]
 
     print(message_lst)
 
@@ -227,7 +227,8 @@ def administrate():
         return render_template('common/adm.html', title=inf_dict['title_administration'],
                                logo_txt=inf_dict['logo_txt'],
                                footer_inf=inf_dict['footer'], users_dict=users_dict,
-                               anonymous=str(current_user).split('>')[0] == '<User', c_user=current_user)
+                               anonymous=str(current_user).split('>')[0] == '<User', c_user=current_user,
+                               users_lst=[(i.id, i.name, i.email, i.created_date.strftime('%H:%M:%S')) for i in users])
 
 
 if __name__ == '__main__':
