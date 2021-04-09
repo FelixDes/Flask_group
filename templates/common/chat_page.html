@@ -32,44 +32,6 @@
         integrity="sha256-bQmrZe4yPnQrLTY+1gYylfNMBuGfnT/HKsCGX+9Xuqo=" crossorigin="anonymous"></script>
 
 
-<script>
-    $(document).ready(() => {
-        $('#form_send_msg').on('submit', (e) => {
-            e.preventDefault();
-        });
-
-        const socket = io.connect('http://127.0.0.1:5000');
-        const username = $('#username').text();
-
-
-        socket.on('connect', () => {
-            socket.send({'username': 'Service message', 'msg': 'User ' + username + ' has connected!'});
-        });
-
-        $('#send_msg').on('click', () => {
-            socket.send({
-                'msg': $('#message_input').val(),
-                'username': username
-            });
-            $('#message_input').val('');
-        });
-
-        socket.on('message', data => {
-            if (data.msg.length > 0) {
-                if (data.username === 'Service message') {
-                    $('#messages').append(`<li class="text-muted"><strong>${data.username}:</strong> ${data.msg}</li>`);
-                } else {
-                    $('#messages').append(`<li><strong>${data.username}:</strong> ${data.msg}</li>`);
-                }
-                console.log('Received message');
-            }
-        });
-    });
-
-
-
-
-</script>
-
+<script language="JavaScript" type="text/javascript" src="static/js_scripts/socketio_helper.js"></script>
 </div>
 {% endblock %}
