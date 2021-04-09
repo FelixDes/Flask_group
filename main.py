@@ -200,18 +200,27 @@ def chat():
 @socketio.on('message')
 def handleMessage(data):
     db_sess = db_session.create_session()
-    print(f"Message: {data}")
-    send(data, broadcast=True)
-    message = Message()
-    message.text = data['msg']
-    try:  # Предотвращение ошибок в случае анонимного пользователя
-        message.is_from_admin = current_user.get_role()
-        message.user_name = current_user.get_name()
-    except AttributeError:
-        message.is_from_admin = False
-        message.user_name = 'Anonymous'
-    db_sess.add(message)
-    db_sess.commit()
+    try:
+        user = db_sess.query(User).filter(User.id == data['id']).first()
+        if user.banned:
+            user.banned = 0
+        else:
+            user.banned = 1
+        db_sess.commit()
+    except KeyError:
+        if str(current_user).split('>')[0] == '<User' or not current_user.banned:
+            print(f"Message: {data}")
+            send(data, broadcast=True)
+            message = Message()
+            message.text = data['msg']
+            try:  # Предотвращение ошибок в случае анонимного пользователя
+                message.is_from_admin = current_user.get_role()
+                message.user_name = current_user.get_name()
+            except AttributeError:
+                message.is_from_admin = False
+                message.user_name = 'Anonymous'
+            db_sess.add(message)
+            db_sess.commit()
 
 
 @app.route('/administrate', methods=['GET', 'POST'])
@@ -228,7 +237,8 @@ def administrate():
                                logo_txt=inf_dict['logo_txt'],
                                footer_inf=inf_dict['footer'], users_dict=users_dict,
                                anonymous=str(current_user).split('>')[0] == '<User', c_user=current_user,
-                               users_lst=[(i.id, i.name, i.email, i.created_date.strftime('%H:%M:%S')) for i in users])
+                               users_lst=[(i.id, i.name, i.email, i.created_date.strftime('%d.%m.%y %H:%M:%S'),
+                                           'YES' if i.banned else 'NO') for i in users])
 
 
 if __name__ == '__main__':
