@@ -127,6 +127,7 @@ def reqister():
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
             return render_template('common/register_page.html', title=inf_dict['title_registration'], form=form,
+                                   footer_inf=inf_dict['footer'], logo_txt=inf_dict['logo_txt'],
                                    message="Пароли не совпадают")
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.email == form.email.data).first():
@@ -143,8 +144,9 @@ def reqister():
         db_sess.commit()
         return redirect('/login')  # Переадресация на страницу входа
     return render_template('common/register_page.html', title=inf_dict['title_registration'],
+                           logo_txt=inf_dict['logo_txt'],
                            footer_inf=inf_dict['footer'],
-                           logo_txt=inf_dict['logo_txt'], chat_btn_text=inf_dict['chat_btn_text'], form=form)
+                           chat_btn_text=inf_dict['chat_btn_text'], form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -154,10 +156,12 @@ def login():
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if not user:
-            return render_template('common/login_page.html', title=inf_dict['title_login'], form=form,
+            return render_template('common/login_page.html', title=inf_dict['title_login'],
+                                   logo_txt=inf_dict['logo_txt'], form=form,
                                    message="Такого пользователя не обнаружено")  # Если пользователь отсутствует в базе данных
         elif not check_password_hash(user.hashed_password, form.password.data):
-            return render_template('common/login_page.html', title=inf_dict['title_login'], form=form,
+            return render_template('common/login_page.html', logo_txt=inf_dict['logo_txt'],
+                                   title=inf_dict['title_login'], form=form,
                                    message="Неверный пароль")
         else:
             login_user(user, remember=form.remember_me.data)
@@ -179,7 +183,8 @@ def chat():
     #     json.dump(json_data, file)
     # res_json = json.dumps(json_data)
 
-    message_lst = [f"<strong>{i.user_name}:</strong> {i.text} <sub>{i.created_date.strftime('%H:%M:%S')}</sub>" for i in messages]
+    message_lst = [f"<strong>{i.user_name}:</strong> {i.text} <sub>{i.created_date.strftime('%H:%M:%S')}</sub>" for i in
+                   messages]
 
     print(message_lst)
 
@@ -216,7 +221,6 @@ def handleMessage(data):
 
 @app.route('/administrate', methods=['GET', 'POST'])
 def administrate():
-    current_user.set_role(True)
     if current_user.get_role():
         db_sess = db_session.create_session()
         users = db_sess.query(User).filter()
