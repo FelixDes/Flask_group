@@ -14,20 +14,6 @@ from data.users import User
 path_json = "Res_json/str.json"
 path_sever_json = "Res_json/server.json"
 
-# Список текущих ключей json
-# Если добавляем что-то в json - дублируем сюда
-#
-# logo_txt - текст логотипа - class header_logo
-# title_main - название мейн страницы
-# title_registration - название страницы регистрации
-# title_login - название страницы логина
-# text_about - о нас - about
-# text_about_our_work - список услуг - class services_list
-# how_to_find_us - то, что будет перед картой - class потом добавлю
-# chat_btn_text - текст для кнопки чата - bottom_chat_button
-# how_to_contact_us - список контактов - class потом добавлю
-# footer - то, что будет отображаться в футере сайта
-
 app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -35,8 +21,6 @@ app.config[
     'SECRET_KEY'] = "_ti{qxjXpNadwPPGaOh{zBawz^GBBpoIU|qpGpEVzgRzqhqeZ]hv_oeBhb|WBkmdRANtw}akIfMgOLm{r]ZnYiZcBFXZz{'"
 
 socketio = SocketIO(app, cors_allowed_origins="*")
-
-c_user = None
 
 server_dict = {}
 
@@ -46,31 +30,10 @@ def parse_all(json_path):  # Ф-ция парсинга json-а
         with open(json_path, "r", encoding='utf-8') as file:
             json_dict = json.load(file)
         return json_dict
-    except FileNotFoundError:
+
+    except BaseException:
         print("Файл не существует")
         return "Файл не существует"
-    except TypeError:
-        print("Сегодня мы принимаем только строки")
-        return "Сегодня мы принимаем только строки"
-    except OSError:
-        print("Что-то пошло не так")
-        return "Что-то пошло не так"
-
-
-def get_value(json_path, key):
-    try:
-        with open(json_path, "r", encoding='utf-8') as file:
-            json_dict = json.load(file)
-        return json_dict.getValue(str(key))
-    except FileNotFoundError:
-        print("Файл не существует")
-        return "Файл не существует"
-    except TypeError:
-        print("Сегодня мы принимаем только строки, и иногда int, но только как ключ")
-        return "Сегодня мы принимаем только строки, и иногда int, но только как ключ"
-    except OSError:
-        print("Что-то пошло не так")
-        return "Что-то пошло не так"
 
 
 inf_dict = parse_all(path_json)
@@ -79,8 +42,10 @@ path_intro_image = "/static/assets/intro.jfif"
 
 def server_start_data_read(path_sever_json):
     global server_dict
+
     with open(path_sever_json) as file:
         data = json.load(file)
+
     for key, value in data.items():
         server_dict.update({key: value})
 
@@ -88,18 +53,23 @@ def server_start_data_read(path_sever_json):
 def main(path_json_get="Res_json/str.json", path_sever_json_get="Res_json/server.json",
          path_intro_image_get="static/assets/intro.jfif"):
     global json_dict, path_json, path_sever_json, path_intro_image
+
     path_json = path_json_get
     path_sever_json = path_sever_json_get
     path_intro_image = path_intro_image_get
+
     json_dict = parse_all(path_json)
+
     db_session.global_init("db/main.db")
     server_start_data_read(path_sever_json)
+
     socketio.run(app, port=server_dict.get('port'))
 
 
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
+
     return db_sess.query(User).get(user_id)
 
 
@@ -107,6 +77,7 @@ def load_user(user_id):
 @login_required
 def logout():
     logout_user()
+
     return redirect("/")
 
 
@@ -124,11 +95,13 @@ def index():
 @app.route('/register', methods=['GET', 'POST'])
 def reqister():
     form = RegisterForm()
+
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
             return render_template('common/register_page.html', title=inf_dict['title_registration'], form=form,
                                    footer_inf=inf_dict['footer'], logo_txt=inf_dict['logo_txt'],
                                    message="Пароли не совпадают")
+
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.email == form.email.data).first():
             return render_template('common/register_page.html', title=inf_dict['title_registration'],
@@ -139,9 +112,11 @@ def reqister():
             name=form.name.data,
             email=form.email.data,
         )
+
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
+
         return redirect('/login')  # Переадресация на страницу входа
     return render_template('common/register_page.html', title=inf_dict['title_registration'],
                            logo_txt=inf_dict['logo_txt'],
@@ -152,17 +127,21 @@ def reqister():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+
     if form.email.data and form.password.data:
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
+
         if not user:
             return render_template('common/login_page.html', title=inf_dict['title_login'],
                                    logo_txt=inf_dict['logo_txt'], form=form,
                                    message="Такого пользователя не обнаружено")  # Если пользователь отсутствует в базе данных
+
         elif not check_password_hash(user.hashed_password, form.password.data):
             return render_template('common/login_page.html', logo_txt=inf_dict['logo_txt'],
                                    title=inf_dict['title_login'], form=form,
                                    message="Неверный пароль")
+
         else:
             login_user(user, remember=form.remember_me.data)
             return redirect('/')
@@ -193,8 +172,10 @@ def chat():
     except AttributeError:
         username = 'Anonymous'
     print(username)
+
     if not str(current_user).split('>')[0] == '<User':
         return redirect("/login")
+
     else:
         return render_template('common/chat_page.html', title=inf_dict['title_chat'], logo_txt=inf_dict['logo_txt'],
                                footer_inf=inf_dict['footer'],
@@ -205,6 +186,7 @@ def chat():
 @socketio.on('message')
 def handleMessage(data):
     db_sess = db_session.create_session()
+
     try:
         user = db_sess.query(User).filter(User.id == data['id']).first()
         if user.banned:
@@ -212,18 +194,22 @@ def handleMessage(data):
         else:
             user.banned = 1
         db_sess.commit()
+
     except KeyError:
         if str(current_user).split('>')[0] == '<User' or not current_user.banned:
             print(f"Message: {data}")
             send(data, broadcast=True)
             message = Message()
             message.text = data['msg']
+
             try:  # Предотвращение ошибок в случае анонимного пользователя
                 message.is_from_admin = current_user.get_role()
                 message.user_name = current_user.get_name()
+
             except AttributeError:
                 message.is_from_admin = False
                 message.user_name = 'Anonymous'
+
             db_sess.add(message)
             db_sess.commit()
 
@@ -234,9 +220,11 @@ def administrate():
         db_sess = db_session.create_session()
         users = db_sess.query(User).filter()
         users_dict = []
+
         for i in users:
             users_dict.append(
                 f"ID: {i.id}, NAME: {i.name}, EMAIL: {i.email}, DATE OF CREATION OF THIS ACCOUNT: {i.created_date.strftime('%H:%M:%S')}")
+
         return render_template('common/adm.html', title=inf_dict['title_administration'],
                                logo_txt=inf_dict['logo_txt'],
                                footer_inf=inf_dict['footer'], users_dict=users_dict,

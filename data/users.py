@@ -40,3 +40,6 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
 
     def set_role(self, bool):
         self.is_admin = bool
+
+    def set_banned(self, bool):
+        self.banned = bool
