@@ -3,10 +3,12 @@ import os
 
 import main
 
-path_json = "Res_json/str.json"
-path_sever_json = "Res_json/server.json"
+# path_json = "Res_json/str.json"
+# path_sever_json = "Res_json/server.json"
 parser = argparse.ArgumentParser()
 
+
+# python configurator.py --json_path_rus Res_json/str.json --json_path_server Res_json/server.json --path_intro_image static/assets/intro.jfif --boot_file yes
 
 def file_not_found(arg, path):
     print(
@@ -17,8 +19,8 @@ def file_not_found(arg, path):
 
 def create_boot_file():
     with open("boot.py", "w") as boot_file:
-        boot_file.write("import main\nmain.main('{path_json}', '{path_sever_json}','{path_intro_image}')".format(path_json=path_json,
-                                                                                            path_sever_json=path_sever_json, path_intro_image=path_intro_image))
+        boot_file.write("import main\nmain.main('{path_json}', '{path_sever_json}','{path_intro_image}')".format(
+            path_json=path_json, path_sever_json=path_sever_json, path_intro_image=path_intro_image))
 
 
 def run_main(path_json, path_sever_json, path_intro_image):
@@ -53,11 +55,11 @@ if not os.path.exists(args.json_path_server):
 if not os.path.exists(args.path_intro_image):
     file_not_found("path_intro_image", args.json_path_server)
 
-if args.boot_file == "yes":
-    create_boot_file()
-
 path_json = args.json_path_rus
 path_sever_json = args.json_path_server
 path_intro_image = args.path_intro_image
+
+if args.boot_file == "yes":
+    create_boot_file()
 
 run_main(path_json, path_sever_json, path_intro_image)

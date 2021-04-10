@@ -133,9 +133,10 @@ def login():
         user = db_sess.query(User).filter(User.email == form.email.data).first()
 
         if not user:
+            # Если пользователь отсутствует в базе данных
             return render_template('common/login_page.html', title=inf_dict['title_login'],
                                    logo_txt=inf_dict['logo_txt'], form=form,
-                                   message="Такого пользователя не обнаружено")  # Если пользователь отсутствует в базе данных
+                                   message="Такого пользователя не обнаружено")
 
         elif not check_password_hash(user.hashed_password, form.password.data):
             return render_template('common/login_page.html', logo_txt=inf_dict['logo_txt'],
@@ -234,4 +235,4 @@ def administrate():
 
 
 if __name__ == '__main__':
-    main(path_json, path_sever_json)
+    main(path_json, path_sever_json, path_intro_image)
