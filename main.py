@@ -232,7 +232,6 @@ def handleMessage(data):
 @app.route('/administrate', methods=['GET', 'POST'])
 def administrate():
     if current_user.get_role():
-        print(mes)
         db_sess = db_session.create_session()
         users = db_sess.query(User).filter()
         users_dict = []
@@ -245,8 +244,7 @@ def administrate():
                                footer_inf=inf_dict['footer'], users_dict=users_dict,
                                anonymous=str(current_user).split('>')[0] == '<User', c_user=current_user,
                                users_lst=[(i.id, i.name, i.email, i.created_date.strftime('%d.%m.%y %H:%M:%S'),
-                                           'YES' if i.banned else 'NO') for i in users], admin=current_user.is_admin,
-                               message=mes)
+                                           'YES' if i.banned else 'NO') for i in users], admin=current_user.is_admin)
 
 
 if __name__ == '__main__':
