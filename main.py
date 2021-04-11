@@ -163,7 +163,7 @@ def chat():
     #     json.dump(json_data, file)
     # res_json = json.dumps(json_data)
 
-    message_lst = [f"<strong>{i.user_name}:</strong> {i.text} <sub>{i.created_date.strftime('%H:%M:%S')}</sub>" for i in
+    message_lst = [f"<strong>{i.user_name}:</strong> {i.text} <sub>{i.created_date.strftime('%H:%M')}</sub>" for i in
                    messages]
 
     print(message_lst)
