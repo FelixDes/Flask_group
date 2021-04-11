@@ -168,8 +168,8 @@ def chat():
     #     json.dump(json_data, file)
     # res_json = json.dumps(json_data)
 
-    message_lst = [f"<strong>{i.user_name.capitalize() + '<sup>admin</sup>' if db_sess.query(User).filter(User.name == i.user_name).first().is_admin else i.user_name.capitalize()}:</strong> " \
-                   f"{i.text} <sub>{i.created_date.strftime('%H:%M')}</sub>" for i in
+    message_lst = [(f"<strong>{i.user_name.capitalize() + '<sup>admin</sup>' if db_sess.query(User).filter(User.name == i.user_name).first().is_admin else i.user_name.capitalize()}:</strong> " \
+                   f"{i.text} <sub>{i.created_date.strftime('%H:%M')}</sub>", i.id) for i in
                    messages]
 
     print(message_lst)
@@ -197,11 +197,17 @@ def handleMessage(data):
     db_sess = db_session.create_session()
 
     try:
-        user = db_sess.query(User).filter(User.id == data['id']).first()
-        if user.banned:
-            user.banned = 0
-        else:
-            user.banned = 1
+        if data['role'] == 'ban':
+            user = db_sess.query(User).filter(User.id == data['id']).first()
+            if user.banned:
+                user.banned = 0
+            else:
+                user.banned = 1
+        elif data['role'] == 'del_mes':
+            if db_sess.query(Message).filter(Message.id == int(data['id'])).first():
+                db_sess.query(Message).filter(Message.id == int(data['id'])).delete()
+            else:
+                del_mes_inf = 'Сообщения с данным ID не найдено'
         db_sess.commit()
 
     except KeyError:
@@ -226,6 +232,7 @@ def handleMessage(data):
 @app.route('/administrate', methods=['GET', 'POST'])
 def administrate():
     if current_user.get_role():
+        print(mes)
         db_sess = db_session.create_session()
         users = db_sess.query(User).filter()
         users_dict = []
@@ -233,13 +240,13 @@ def administrate():
         for i in users:
             users_dict.append(
                 f"ID: {i.id}, NAME: {i.name}, EMAIL: {i.email}, DATE OF CREATION OF THIS ACCOUNT: {i.created_date.strftime('%H:%M:%S')}")
-
         return render_template('common/adm.html', title=inf_dict['title_administration'],
                                logo_txt=inf_dict['logo_txt'],
                                footer_inf=inf_dict['footer'], users_dict=users_dict,
                                anonymous=str(current_user).split('>')[0] == '<User', c_user=current_user,
                                users_lst=[(i.id, i.name, i.email, i.created_date.strftime('%d.%m.%y %H:%M:%S'),
-                                           'YES' if i.banned else 'NO') for i in users], admin=current_user.is_admin)
+                                           'YES' if i.banned else 'NO') for i in users], admin=current_user.is_admin,
+                               message=mes)
 
 
 if __name__ == '__main__':

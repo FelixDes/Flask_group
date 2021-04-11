@@ -27,7 +27,16 @@
                     <button type="submit" id="send_ban" class="btn btn-success submit_btn">Send</button>
                 </div>
     </form>
-    {{mes}}
+    <p id="inf_message"></p>
+    <h1 align="center" style="padding-top: 50px; padding-bottom: 0px">Сообщения</h1>
+    <form id="del_msg" class="chat" autocomplete="off" novalidate>
+                <div class="form-group">
+                    <label for="message_input">ID:</label>
+                    <input type="text" class="form-control input" id="message_del"
+                           placeholder="Enter ID to delete message">
+                    <button type="submit" id="send_del" class="btn btn-success submit_btn">Send</button>
+                </div>
+    </form>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
@@ -50,21 +59,33 @@
 
         $('#send_ban').on('click', () => {
             socket.send({
-                'id': $('#message_input').val()
+                'id': $('#message_input').val(),
+                'role': 'ban'
             });
             $('#message_input').val('');
         });
+    });
 
 
-        socket.on('ban', data => {
-            if (data.msg.length > 0) {
-                if (data.username === 'Service message') {
-                    $('#messages').append(`<li class="text-muted"><strong>${data.username}:</strong> ${data.msg}</li>`);
-                } else {
-                    $('#messages').append(`<li><strong>${data.username}:</strong> ${data.msg}</li>`);
-                }
-                console.log('Received message');
-            }
+
+
+</script>
+<script>
+    $(document).ready(() => {
+        $('#del_msg').on('submit', (e) => {
+            e.preventDefault();
+        });
+
+        const socket = io.connect('http://127.0.0.1:5000');
+
+
+
+        $('#send_del').on('click', () => {
+            socket.send({
+                'id': $('#message_del').val(),
+                'role': 'del_mes'
+            });
+            $('#message_del').val('');
         });
     });
 

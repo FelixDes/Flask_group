@@ -5,7 +5,7 @@
 <div class="container">
     <ul id="messages" class="messages">
         {% for item in message_lst %}
-        <li>{{ item|safe }}</li>
+        <li title="id: {{item[1]}}">{{ item[0]|safe }}</li>
         {% endfor %}
     </ul>
     <div class="row">
