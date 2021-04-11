@@ -9,7 +9,14 @@ $(document).ready(() => {
     // Подключаем сокетное соединение
     const socket = io.connect(local_URL.toString());
     //Берём текущий юзернейм из соответствующего поля
-    const username = $('#username').text();
+    if ($('#username').text()) {
+    var username = $('#username').text();
+    }
+    else {
+    var username = $('#username_admin').text() + '<sup>admin</sup>';
+    }
+    var username = username.toLowerCase()
+    var username = username.charAt(0).toUpperCase() + username.slice(1);
 
     //Listener кнопки
     $('#send_msg').on('click', () => {

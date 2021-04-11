@@ -83,13 +83,18 @@ def logout():
 
 @app.route("/")
 def index():
+    try:
+        is_admin = current_user.is_admin
+    except AttributeError:
+        is_admin = False
     return render_template("common/main_page.html", title=inf_dict['title_main'],
                            interesting_information=inf_dict['text_about'],
                            information_list=inf_dict['text_about_our_work'],
                            logo_txt=inf_dict['logo_txt'], chat_btn_text=inf_dict['chat_btn_text'],
                            connection_list=inf_dict['how_to_contact_us'], how_to_find_us=inf_dict['how_to_find_us'],
                            footer_inf=inf_dict['footer'], intro_image=path_intro_image,
-                           anonymous=str(current_user).split('>')[0] == '<User', c_user=current_user)
+                           anonymous=str(current_user).split('>')[0] == '<User',
+                           c_user=current_user, admin=is_admin)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -163,15 +168,18 @@ def chat():
     #     json.dump(json_data, file)
     # res_json = json.dumps(json_data)
 
-    message_lst = [f"<strong>{i.user_name}:</strong> {i.text} <sub>{i.created_date.strftime('%H:%M')}</sub>" for i in
+    message_lst = [f"<strong>{i.user_name.capitalize() + '<sup>admin</sup>' if db_sess.query(User).filter(User.name == i.user_name).first().is_admin else i.user_name.capitalize()}:</strong> " \
+                   f"{i.text} <sub>{i.created_date.strftime('%H:%M')}</sub>" for i in
                    messages]
 
     print(message_lst)
 
     try:
         username = str(current_user.name)
+        is_admin = current_user.is_admin
     except AttributeError:
         username = 'Anonymous'
+        is_admin = False
     print(username)
 
     if not str(current_user).split('>')[0] == '<User':
@@ -181,7 +189,7 @@ def chat():
         return render_template('common/chat_page.html', title=inf_dict['title_chat'], logo_txt=inf_dict['logo_txt'],
                                footer_inf=inf_dict['footer'],
                                username=username, anonymous=str(current_user).split('>')[0] == '<User',
-                               c_user=current_user, message_lst=message_lst)
+                               c_user=current_user, message_lst=message_lst, admin=is_admin)
 
 
 @socketio.on('message')
@@ -231,7 +239,7 @@ def administrate():
                                footer_inf=inf_dict['footer'], users_dict=users_dict,
                                anonymous=str(current_user).split('>')[0] == '<User', c_user=current_user,
                                users_lst=[(i.id, i.name, i.email, i.created_date.strftime('%d.%m.%y %H:%M:%S'),
-                                           'YES' if i.banned else 'NO') for i in users])
+                                           'YES' if i.banned else 'NO') for i in users], admin=current_user.is_admin)
 
 
 if __name__ == '__main__':

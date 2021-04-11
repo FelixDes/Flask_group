@@ -39,7 +39,11 @@
                     <a class="nav_link" href="/login">ВХОД</a>
                     {% else %}
                     <a class="nav_link" href="/logout">ВЫХОД</a>
+                    {% if admin %}
+                    <a class="nav_link" href="/administrate"><strong id="username_admin">{{ c_user.name.upper() }}</strong></a>
+                    {% else %}
                     <a class="nav_link"><strong id="username">{{ c_user.name.upper() }}</strong></a>
+                    {% endif %}
                     {% endif %}
                 </nav>
             </div>
