@@ -140,7 +140,22 @@ h1, h2, h3, h4, h5, h6 {
     padding-left: 40px;
     border: solid 1px black; /* Параметры рамки */
 }
+.scrollToBottom_btn{
+    background-color: #F8F9F9;
+    z-index: 1000;
+    position: absolute;
+    transform: translateY(10%);
+    transform: translateX(950%);
+    height:75px;
+    width:100px;
+    border: solid 1px black; /* Параметры рамки */
+    border-radius: 15px;
+    opacity: 0.5
 
+}
+/*.scrollToBottom_btn:active{
+    visibility: hidden;
+}*/
 .users_table {
     background-color: #F8F9F9;
     align-text: right;

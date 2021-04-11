@@ -1,13 +1,17 @@
 {% extends "common/base.html" %}
 
 {% block content %}
+<script language="JavaScript" type="text/javascript" src="static/js_scripts/div_scroll.js"></script>
 
-<div class="container">
-    <ul id="messages" class="messages">
+<div class="container" >
+
+    <ul id="messages" class="messages" onscroll="button_Activation('messages')" onload="scrollToBottom('messages')">
         {% for item in message_lst %}
         <li title="id: {{item[1]}}">{{ item[0]|safe }}</li>
         {% endfor %}
     </ul>
+    <button onClick="scrollToBottom('messages')" class="scrollToBottom_btn" id="scrollToBottom_btn">ВНИЗ</button>
+<!--    <button onClick="scrollSmoothToBottom('messages')">Scroll <b>Smooth</b> to Bottom</button>-->
     <div class="row">
         <div class="col-7">
             <form id="form_send_msg" class="chat" autocomplete="off" novalidate>
@@ -27,11 +31,14 @@
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
         crossorigin="anonymous"></script>
 
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"
         integrity="sha256-bQmrZe4yPnQrLTY+1gYylfNMBuGfnT/HKsCGX+9Xuqo=" crossorigin="anonymous"></script>
 
-
+<style lang="css">
+.bottom_chat_button{
+visibility: hidden;
+}
+</style>
 <script language="JavaScript" type="text/javascript" src="static/js_scripts/socketio_helper.js"></script>
 </div>
 {% endblock %}
