@@ -218,7 +218,7 @@ def handleMessage(data):
         db_sess.commit()
 
     except KeyError:   # Сообщения в чате
-        if str(current_user).split('>')[0] == '<User' or not current_user.banned:
+        if str(current_user).split('>')[0] == '<User' and not current_user.banned:
             print(f"Message: {data}")  # Отображение полученного сообщения в консоли
             send(data, broadcast=True)
             message = Message()

@@ -8,7 +8,7 @@ import main
 parser = argparse.ArgumentParser()
 
 
-# python configurator.py --json_path_rus Res_json/str.json --json_path_server Res_json/server.json --path_intro_image static/assets/intro.jpg --boot_file yes
+# python configurator.py --json_path_rus Res_json/str.json --json_path_server Res_json/server.json --path_intro_image static/assets/intro.jpg --boot_file yes --run yes
 
 def file_not_found(arg, path):
     print(
@@ -66,3 +66,5 @@ if args.boot_file == "yes":
 
 if args.run == "yes":
     run_main(path_json, path_sever_json, path_intro_image)
+
+print("Успех")
