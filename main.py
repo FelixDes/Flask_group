@@ -67,25 +67,25 @@ def main(path_json_get="Res_json/str.json", path_sever_json_get="Res_json/server
 
 
 @login_manager.user_loader
-def load_user(user_id):
+def load_user(user_id):  # Получение пользовотеля по id из базы данных
     db_sess = db_session.create_session()
 
     return db_sess.query(User).get(user_id)
 
 
-@app.route('/logout')
+@app.route('/logout')  # Выход из учётной записи
 @login_required
 def logout():
     logout_user()
 
-    return redirect("/")
+    return redirect("/")  # Возврат на основную страницу
 
 
 @app.route("/")
-def index():
+def index():  # Основная страница
     try:
         is_admin = current_user.is_admin
-    except AttributeError:
+    except AttributeError:  # В случае анонимного пользователя
         is_admin = False
     return render_template("common/main_page.html", title=inf_dict['title_main'],
                            interesting_information=inf_dict['text_about'],
@@ -98,7 +98,7 @@ def index():
 
 
 @app.route('/register', methods=['GET', 'POST'])
-def reqister():
+def reqister():  # Регистрация нового пользователя
     form = RegisterForm()
 
     if form.validate_on_submit():
@@ -106,6 +106,7 @@ def reqister():
             return render_template('common/register_page.html', title=inf_dict['title_registration'], form=form,
                                    footer_inf=inf_dict['footer'], logo_txt=inf_dict['logo_txt'],
                                    message="Пароли не совпадают")
+            # При различных паролях в первом и втором поле ввода
 
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.email == form.email.data).first():
@@ -113,6 +114,7 @@ def reqister():
                                    footer_inf=inf_dict['footer'],
                                    logo_txt=inf_dict['logo_txt'], chat_btn_text=inf_dict['chat_btn_text'], form=form,
                                    message="Такой пользователь уже есть")
+            # При попытке создать пользователя на уже имеющуюся в базе данных почту
         user = User(  # Создание нового пользователя
             name=form.name.data,
             email=form.email.data,
@@ -130,7 +132,7 @@ def reqister():
 
 
 @app.route('/login', methods=['GET', 'POST'])
-def login():
+def login():  # Вход в аккаунт
     form = LoginForm()
 
     if form.email.data and form.password.data:
@@ -147,10 +149,12 @@ def login():
             return render_template('common/login_page.html', logo_txt=inf_dict['logo_txt'],
                                    title=inf_dict['title_login'], form=form,
                                    message="Неверный пароль")
+        # Если пароль из базы данных не совподает с введённым
 
         else:
             login_user(user, remember=form.remember_me.data)
-            return redirect('/')
+            return redirect('/')  # Корректный вход в учётную запись
+            # Происходит переадрессация на главную страницу
     return render_template('common/login_page.html', title=inf_dict['title_login'], logo_txt=inf_dict['logo_txt'],
                            form=form,
                            footer_inf=inf_dict['footer'], chat_btn_text=inf_dict['chat_btn_text'],
@@ -170,19 +174,19 @@ def chat():
 
     message_lst = [(f"<strong>{i.user_name.capitalize() + '<sup>admin</sup>' if db_sess.query(User).filter(User.name == i.user_name).first().is_admin else i.user_name.capitalize()}:</strong> " \
                    f"{i.text} <sub>{i.created_date.strftime('%H:%M')}</sub>", i.id) for i in
-                   messages]
+                   messages]   # Формирование списка сообщений, находящихся в базе данных
 
     print(message_lst)
 
     try:
         username = str(current_user.name)
         is_admin = current_user.is_admin
-    except AttributeError:
+    except AttributeError:  # Проверка на анонимного пользователя
         username = 'Anonymous'
         is_admin = False
     print(username)
 
-    if not str(current_user).split('>')[0] == '<User':
+    if not str(current_user).split('>')[0] == '<User':  # При попытке анонимного пользователя войти в чат
         return redirect("/login")
 
     else:
@@ -197,22 +201,22 @@ def handleMessage(data):
     db_sess = db_session.create_session()
 
     try:
-        if data['role'] == 'ban':
+        if data['role'] == 'ban':  # Сообщения бана или разбана пользователя
             user = db_sess.query(User).filter(User.id == data['id']).first()
             if user.banned:
                 user.banned = 0
             else:
                 user.banned = 1
-        elif data['role'] == 'del_mes':
+        elif data['role'] == 'del_mes':  # Сообщения удаления сообщений по id
             if db_sess.query(Message).filter(Message.id == int(data['id'])).first():
                 db_sess.query(Message).filter(Message.id == int(data['id'])).delete()
             else:
                 del_mes_inf = 'Сообщения с данным ID не найдено'
         db_sess.commit()
 
-    except KeyError:
+    except KeyError:   # Сообщения в чате
         if str(current_user).split('>')[0] == '<User' or not current_user.banned:
-            print(f"Message: {data}")
+            print(f"Message: {data}")  # Отображение полученного сообщения в консоли
             send(data, broadcast=True)
             message = Message()
             message.text = data['msg']
@@ -230,13 +234,14 @@ def handleMessage(data):
 
 
 @app.route('/administrate', methods=['GET', 'POST'])
-def administrate():
+def administrate():  # Страница администрира
+    # Можно попасть при щелчке на имя пользователя, являющегося администратором
     if current_user.get_role():
         db_sess = db_session.create_session()
         users = db_sess.query(User).filter()
         users_dict = []
 
-        for i in users:
+        for i in users:  # Формирования словаря для отображения таблицы пользователей
             users_dict.append(
                 f"ID: {i.id}, NAME: {i.name}, EMAIL: {i.email}, DATE OF CREATION OF THIS ACCOUNT: {i.created_date.strftime('%H:%M:%S')}")
         return render_template('common/adm.html', title=inf_dict['title_administration'],
