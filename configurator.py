@@ -8,7 +8,7 @@ import main
 parser = argparse.ArgumentParser()
 
 
-# python configurator.py --json_path_rus Res_json/str.json --json_path_server Res_json/server.json --path_intro_image static/assets/intro.jfif --boot_file yes
+# python configurator.py --json_path_rus Res_json/str.json --json_path_server Res_json/server.json --path_intro_image static/assets/intro.jpg --boot_file yes
 
 def file_not_found(arg, path):
     print(
@@ -43,6 +43,8 @@ parser.add_argument("--path_intro_image",
 parser.add_argument("--boot_file", default="yes", choices=["yes", "no"],
                     help="Создавать ли отдельный запускной файл?")
 
+parser.add_argument("--run", choices=["yes", "no"])
+
 # parser.add_argument("--lang", default="rus", choices=["rus", "eng"])
 args = parser.parse_args()
 
@@ -62,4 +64,5 @@ path_intro_image = args.path_intro_image
 if args.boot_file == "yes":
     create_boot_file()
 
-run_main(path_json, path_sever_json, path_intro_image)
+if args.run == "yes":
+    run_main(path_json, path_sever_json, path_intro_image)
