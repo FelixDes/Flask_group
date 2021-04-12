@@ -1,4 +1,5 @@
 import json
+import flask_ngrok
 
 from flask import Flask, render_template, redirect
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
@@ -22,6 +23,8 @@ app.config[
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 
+flask_ngrok.run_with_ngrok(app)
+
 server_dict = {}
 
 
@@ -37,7 +40,7 @@ def parse_all(json_path):  # Ф-ция парсинга json-а
 
 
 inf_dict = parse_all(path_json)
-path_intro_image = "/static/assets/intro.jfif"
+path_intro_image = "/static/assets/intro.jpg"
 
 
 def server_start_data_read(path_sever_json):

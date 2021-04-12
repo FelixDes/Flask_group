@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="/static/css/style.css" rel="stylesheet">
-        <script src="https://api-maps.yandex.ru/2.1/?apikey=6fbbac3f-f88d-4d13-b6c0-dcfb9e2829bd&lang=ru_RU"
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=6fbbac3f-f88d-4d13-b6c0-dcfb9e2829bd&lang=ru_RU"
             type="text/javascript">
     </script>
 
@@ -16,10 +15,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
 
-
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
     <script language="JavaScript" type="text/javascript" src="static/js_scripts/jquery-3.6.0.min.js"></script>
     <script language="JavaScript" type="text/javascript" src="static/js_scripts/map_script.js"></script>
     <script language="JavaScript" type="text/javascript" src="static/js_scripts/scroll_helper.js"></script>
@@ -30,6 +28,8 @@
             integrity="sha256-bQmrZe4yPnQrLTY+1gYylfNMBuGfnT/HKsCGX+9Xuqo=" crossorigin="anonymous"></script>
 
     <title>{{ title }}</title>
+
+
 </head>
 <body>
 <div class="page">
@@ -48,7 +48,8 @@
                     {% else %}
                     <a class="nav_link" href="/logout">ВЫХОД</a>
                     {% if admin %}
-                    <a class="nav_link" href="/administrate"><strong id="username_admin">{{ c_user.name.upper() }}</strong></a>
+                    <a class="nav_link" href="/administrate"><strong id="username_admin">{{ c_user.name.upper()
+                        }}</strong></a>
                     {% else %}
                     <a class="nav_link"><strong id="username">{{ c_user.name.upper() }}</strong></a>
                     {% endif %}
