@@ -42,3 +42,7 @@ Werkzeug==1.0.1
 WTForms==2.3.3
 yarg==0.1.9
 yarl==1.6.3
+wheel==0.36.2
+gevent==21.1.2
+gevent-websocket==0.9.5
+eventlet==0.30.2
