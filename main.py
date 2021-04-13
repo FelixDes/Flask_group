@@ -1,6 +1,6 @@
 import json
-import flask_ngrok
 
+import flask_ngrok
 from flask import Flask, render_template, redirect
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from flask_socketio import SocketIO, send
@@ -175,9 +175,10 @@ def chat():
     #     json.dump(json_data, file)
     # res_json = json.dumps(json_data)
 
-    message_lst = [(f"<strong>{i.user_name.capitalize() + '<sup>admin</sup>' if db_sess.query(User).filter(User.name == i.user_name).first().is_admin else i.user_name.capitalize()}:</strong> " \
+    message_lst = [(
+                   f"<strong>{i.user_name.capitalize() + '<sup>admin</sup>' if db_sess.query(User).filter(User.name == i.user_name).first().is_admin else i.user_name.capitalize()}:</strong> " \
                    f"{i.text} <sub>{i.created_date.strftime('%H:%M')}</sub>", i.id) for i in
-                   messages]   # Формирование списка сообщений, находящихся в базе данных
+                   messages]  # Формирование списка сообщений, находящихся в базе данных
 
     print(message_lst)
 
@@ -217,7 +218,7 @@ def handleMessage(data):
                 del_mes_inf = 'Сообщения с данным ID не найдено'
         db_sess.commit()
 
-    except KeyError:   # Сообщения в чате
+    except KeyError:  # Сообщения в чате
         if str(current_user).split('>')[0] == '<User' and not current_user.banned:
             print(f"Message: {data}")  # Отображение полученного сообщения в консоли
             send(data, broadcast=True)
